@@ -509,6 +509,8 @@
       }
       if(state.activeChapterId){
         openChapter(state.activeChapterId);
+      } else {
+        renderChapterNav();
       }
     }
   }
@@ -548,11 +550,13 @@
         e.preventDefault();
         card.classList.remove('dragover');
         if(!state.draggedPin || state.draggedPin === card) return;
-        const a = state.data.pins.findIndex(p => p.id === Number(state.draggedPin.dataset.pinId));
-        const b = state.data.pins.findIndex(p => p.id === Number(card.dataset.pinId));
-        [state.data.pins[a], state.data.pins[b]] = [state.data.pins[b], state.data.pins[a]];
-        persist();
-        renderPins();
+        const a = state.data.pins.findIndex(p => p.id === String(state.draggedPin.dataset.pinId) || p.id === Number(state.draggedPin.dataset.pinId));
+        const b = state.data.pins.findIndex(p => p.id === String(card.dataset.pinId) || p.id === Number(card.dataset.pinId));
+        if(a !== -1 && b !== -1){
+          [state.data.pins[a], state.data.pins[b]] = [state.data.pins[b], state.data.pins[a]];
+          persist();
+          renderPins();
+        }
       });
     });
   }
@@ -579,7 +583,7 @@
     $('#detailTitle').textContent = pin.title || 'Untitled';
     
     const images = getActivePinImages(pin);
-    if(state.carouselIndex >= images.length) state.carouselIndex = 0;
+    if(state.carouselIndex >= images.length) state.carouselIndex = Math.max(0, images.length - 1);
     
     const carouselImg = $('#carouselImg');
     const carouselCounter = $('#carouselCounter');
@@ -599,15 +603,13 @@
   }
 
   function renderChapterNav(){
-    requestAnimationFrame(() => {
-      const navHtml = state.data.chapters.map((ch, idx) => `
-        <button class="ch-btn ${String(ch.id) === String(state.activeChapterId) ? 'active' : ''}" data-open-chapter="${ch.id}">Ch ${idx + 1}</button>
-      `).join('');
-      const navEl = $('#chapterNav');
-      if(navEl) {
-        navEl.innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
-      }
-    });
+    const navHtml = state.data.chapters.map((ch, idx) => `
+      <button class="ch-btn ${String(ch.id) === String(state.activeChapterId) ? 'active' : ''}" data-open-chapter="${ch.id}">Ch ${idx + 1}</button>
+    `).join('');
+    const navEl = $('#chapterNav');
+    if(navEl) {
+      navEl.innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
+    }
   }
 
   function renderMediaEmbeds(spotifyUrl, youtubeUrl){
