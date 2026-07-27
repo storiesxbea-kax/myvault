@@ -109,8 +109,7 @@
         <button class="tab" data-view="coverTab" id="coverTabBtn" style="border-color:#8B0000;color:#f5e9d5;background:#220707;">Book Cover</button>
       </div>
       <div class="row right">
-        <button class="btn secondary" id="copyBtn">Copy</button>
-        <button class="btn secondary" id="ttsBtn"> Speak</button>
+        <button class="btn secondary" id="copyBtn">Copy Text</button>
         <button class="btn secondary" id="distractionBtn">Focus</button>
       </div>
     </div>
@@ -144,9 +143,9 @@
               <img id="carouselImg" src="" alt="Pin item">
             </div>
             <div class="carousel-nav-row">
-              <button class="btn secondary" id="prevSlideBtn"> Prev</button>
+              <button class="btn secondary" id="prevSlideBtn">Prev</button>
               <span id="carouselCounter" class="small" style="font-weight:600;color:var(--text);">1 / 1</span>
-              <button class="btn secondary" id="nextSlideBtn">Next </button>
+              <button class="btn secondary" id="nextSlideBtn">Next</button>
             </div>
           </div>
           <p id="carouselNote" class="small" style="margin:8px 0 16px;text-align:center;font-style:italic;"></p>
@@ -370,6 +369,7 @@
       </div>
     </div>
   </div>
+
   <script>
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
@@ -599,10 +599,15 @@
   }
 
   function renderChapterNav(){
-    const navHtml = state.data.chapters.map((ch, idx) => `
-      <button class="ch-btn ${ch.id === state.activeChapterId ? 'active' : ''}" data-open-chapter="${ch.id}">Ch ${idx + 1}</button>
-    `).join('');
-    $('#chapterNav').innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
+    requestAnimationFrame(() => {
+      const navHtml = state.data.chapters.map((ch, idx) => `
+        <button class="ch-btn ${String(ch.id) === String(state.activeChapterId) ? 'active' : ''}" data-open-chapter="${ch.id}">Ch ${idx + 1}</button>
+      `).join('');
+      const navEl = $('#chapterNav');
+      if(navEl) {
+        navEl.innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
+      }
+    });
   }
 
   function renderMediaEmbeds(spotifyUrl, youtubeUrl){
@@ -647,7 +652,7 @@
 
   function openChapter(chId){
     state.activeChapterId = chId;
-    let ch = state.data.chapters.find(c => c.id === chId);
+    let ch = state.data.chapters.find(c => String(c.id) === String(chId));
     if(!ch && state.data.chapters.length > 0){
       ch = state.data.chapters[0];
       state.activeChapterId = ch.id;
@@ -672,11 +677,10 @@
     }
     renderChapterNav();
     renderGeneralComments();
-    setView('editor');
   }
 
   function addNewChapter(){
-    const newId = Date.now();
+    const newId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
     const chNum = state.data.chapters.length + 1;
     const newCh = {
       id: newId,
@@ -713,32 +717,6 @@
     `).join('') || '<div class="small">No comments yet for this chapter.</div>';
   }
 
-  function speakChapter(){
-    const text = $('#chapterText').value.trim();
-    if(!text){ setStatus('Nothing to read.'); return; }
-    if(!('speechSynthesis' in window)){ setStatus('Speech not supported in this browser.'); return; }
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.92;
-    u.pitch = 1;
-    u.volume = 1;
-    const btn = $('#ttsBtn');
-    const orig = btn.textContent;
-    btn.textContent = 'Speaking...';
-    btn.disabled = true;
-    u.onend = () => {
-      btn.textContent = orig;
-      btn.disabled = false;
-      setStatus('Done.');
-    };
-    u.onerror = () => {
-      btn.textContent = orig;
-      btn.disabled = false;
-      setStatus('Speech error.');
-    };
-    speechSynthesis.speak(u);
-  }
-
   function render(){
     renderPins();
     renderPinDetail();
@@ -756,7 +734,7 @@
     `).join('');
     renderChapterNav();
     if(state.activeChapterId){
-      const ch = state.data.chapters.find(c => c.id === state.activeChapterId);
+      const ch = state.data.chapters.find(c => String(c.id) === String(state.activeChapterId));
       if(ch){
         $('#editorHeading').textContent = ch.title || 'Chapter';
         $('#chapterTitle').value = ch.title || '';
@@ -778,7 +756,7 @@
     const youtubeVal = $('#youtubeUrl').value;
 
     if(state.activeChapterId){
-      const ch = state.data.chapters.find(c => c.id === state.activeChapterId);
+      const ch = state.data.chapters.find(c => String(c.id) === String(state.activeChapterId));
       if(ch){
         ch.title = titleVal;
         ch.meta = metaVal;
@@ -790,7 +768,7 @@
         state.data.chapters.push(newCh);
       }
     }else{
-      const newCh = { id: Date.now(), title: titleVal, meta: metaVal, content: contentVal, spotifyUrl: spotifyVal, youtubeUrl: youtubeVal };
+      const newCh = { id: 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(), title: titleVal, meta: metaVal, content: contentVal, spotifyUrl: spotifyVal, youtubeUrl: youtubeVal };
       state.data.chapters.push(newCh);
       state.activeChapterId = newCh.id;
     }
@@ -819,9 +797,8 @@
 
     $$('.tab').forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.view)));
     $('#homeBtn').addEventListener('click', () => setView('pins'));
-    $('#backBtn',).addEventListener('click', () => setView('pins'));
+    $('#backBtn').addEventListener('click', () => setView('pins'));
     $('#distractionBtn').addEventListener('click', () => $('#commentsPanel').classList.toggle('hidden'));
-    $('#ttsBtn').addEventListener('click', speakChapter);
     $('#copyBtn').addEventListener('click', async () => {
       const text = $('#chapterText').value || '';
       if(!text) return;
@@ -838,7 +815,7 @@
       }
       const file = $('#pinFile').files[0];
       const imageUrl = file ? await uploadImage(file) : '';
-      state.data.pins.unshift({ id: Date.now(), title, category, note: '', imageUrl, subPins: [] });
+      state.data.pins.unshift({ id: 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(), title, category, note: '', imageUrl, subPins: [] });
       $('#pinTitle').value = '';
       $('#pinCategory').value = '';
       $('#pinFile').value = '';
@@ -856,7 +833,7 @@
       const title = $('#subPinTitle').value.trim();
       const note = $('#subPinNote').value.trim();
       const file = $('#subPinFile').files[0];
-      const subPin = { id: Date.now(), title, note, imageUrl: '' };
+      const subPin = { id: 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(), title, note, imageUrl: '' };
       if(file) subPin.imageUrl = await uploadImage(file);
       parent.subPins = parent.subPins || [];
       parent.subPins.unshift(subPin);
@@ -900,7 +877,7 @@
       const conflict = $('#beatConflict').value.trim();
       const outcome = $('#beatOutcome').value.trim();
       if(!title) return;
-      state.data.beats.unshift({ id: Date.now(), chNum, beatNum, title, goal, conflict, outcome });
+      state.data.beats.unshift({ id: 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(), chNum, beatNum, title, goal, conflict, outcome });
       $('#beatChNum').value = '';
       $('#beatNum').value = '';
       $('#beatTitle').value = '';
@@ -922,7 +899,7 @@
 
     $('#chapterTitle').addEventListener('input', () => {
       if(!state.activeChapterId && state.data.chapters.length === 0){
-        state.activeChapterId = Date.now();
+        state.activeChapterId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
       }
     });
 
@@ -931,7 +908,7 @@
         if(state.data.chapters.length > 0){
           state.activeChapterId = state.data.chapters[0].id;
         } else {
-          state.activeChapterId = Date.now();
+          state.activeChapterId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
           state.data.chapters.push({
             id: state.activeChapterId,
             title: $('#chapterTitle').value.trim() || 'Untitled',
@@ -948,7 +925,7 @@
       if(!text) return;
       if(!state.data.generalComments) state.data.generalComments = {};
       if(!state.data.generalComments[chId]) state.data.generalComments[chId] = [];
-      state.data.generalComments[chId].unshift({ id: Date.now(), author, text });
+      state.data.generalComments[chId].unshift({ id: 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(), author, text });
       $('#generalCommentText').value = '';
       await persist();
       renderGeneralComments();
@@ -956,7 +933,8 @@
     });
 
     document.addEventListener('click', async e => {
-      if(e.target.id === 'addNewChapterBtn'){
+      const btnTarget = e.target.closest('button');
+      if(btnTarget && btnTarget.id === 'addNewChapterBtn'){
         addNewChapter();
         return;
       }
@@ -966,13 +944,13 @@
 
       const openChapterId = t.getAttribute('data-open-chapter');
       if(openChapterId !== null){
-        openChapter(Number(openChapterId));
+        openChapter(openChapterId);
         return;
       }
 
       const pinOpenId = t.getAttribute('data-pin-open');
       if(pinOpenId !== null){
-        state.activePinId = Number(pinOpenId);
+        state.activePinId = pinOpenId;
         state.carouselIndex = 0;
         renderPinDetail();
         return;
@@ -980,9 +958,8 @@
 
       const pinDelId = t.getAttribute('data-pin-del');
       if(pinDelId !== null){
-        const idNum = Number(pinDelId);
-        state.data.pins = state.data.pins.filter(p => p.id !== idNum);
-        if(state.activePinId === idNum) state.activePinId = null;
+        state.data.pins = state.data.pins.filter(p => String(p.id) !== String(pinDelId));
+        if(String(state.activePinId) === String(pinDelId)) state.activePinId = null;
         await persist();
         render();
         return;
@@ -990,7 +967,7 @@
 
       const pinEditId = t.getAttribute('data-pin-edit');
       if(pinEditId !== null){
-        const pin = state.data.pins.find(p => p.id === Number(pinEditId));
+        const pin = state.data.pins.find(p => String(p.id) === String(pinEditId));
         if(!pin) return;
         const a = prompt('Pin title:', pin.title || '');
         if(a === null) return;
@@ -1009,7 +986,7 @@
       if(subpinDelId !== null){
         const parent = getActivePin();
         if(!parent) return;
-        parent.subPins = (parent.subPins || []).filter(sp => sp.id !== Number(subpinDelId));
+        parent.subPins = (parent.subPins || []).filter(sp => String(sp.id) !== String(subpinDelId));
         state.carouselIndex = 0;
         await persist();
         renderPinDetail();
@@ -1020,7 +997,7 @@
       if(subpinEditId !== null){
         const parent = getActivePin();
         if(!parent) return;
-        const sp = (parent.subPins || []).find(x => x.id === Number(subpinEditId));
+        const sp = (parent.subPins || []).find(x => String(x.id) === String(subpinEditId));
         if(!sp) return;
         const a = prompt('Sub-pin title:', sp.title || '');
         if(a === null) return;
@@ -1036,7 +1013,7 @@
       if(delCommentId !== null){
         const chId = state.activeChapterId;
         if(chId != null && state.data.generalComments?.[chId]){
-          state.data.generalComments[chId] = state.data.generalComments[chId].filter(c => c.id !== Number(delCommentId));
+          state.data.generalComments[chId] = state.data.generalComments[chId].filter(c => String(c.id) !== String(delCommentId));
           await persist();
           renderGeneralComments();
         }
@@ -1045,13 +1022,13 @@
 
       const beatDelId = t.getAttribute('data-beat-del');
       if(beatDelId !== null){
-        state.data.beats = state.data.beats.filter(x => x.id !== Number(beatDelId));
+        state.data.beats = state.data.beats.filter(x => String(x.id) !== String(beatDelId));
         await persist();
         render();
         return;
       }
     });
   });
-</script>
+  </script>
 </body>
 </html>
