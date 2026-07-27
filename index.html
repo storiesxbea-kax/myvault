@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Blood Between Us — Vault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lora:wght@400;500;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+  <style>
+    :root{--bg:#0a0a0a;--panel:#1a1a1a;--panel2:#222;--text:#f5e9d5;--muted:#999;--accent:#8B0000;--border:#444}
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Lora,serif}
+    body{min-height:100vh}
+    button,input,textarea{font:inherit}
+    .hidden{display:none!important}
+    .center{display:flex;align-items:center;justify-content:center}
+    .wrap{max-width:1400px;margin:0 auto;padding:16px}
+    .panel,.card{background:var(--panel);border:1px solid var(--border);border-radius:6px}
+    .panel{padding:24px}
+    .topbar{position:sticky;top:0;z-index:20;background:#111;border-bottom:1px solid var(--accent);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .right{margin-left:auto}
+    .btn{background:var(--accent);color:var(--text);border:none;padding:10px 16px;border-radius:4px;cursor:pointer}
+    .btn.secondary{background:#333;color:#ddd}
+    .btn:hover{filter:brightness(1.1)}
+    .tab{padding:8px 12px;border:1px solid var(--border);background:#111;color:var(--muted);border-radius:4px;cursor:pointer}
+    .tab.active{border-color:var(--accent);color:var(--text);background:#220707}
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+    .card{padding:16px}
+    .grid2{display:grid;gap:16px;grid-template-columns:1fr 340px}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+    .small{color:var(--muted);font-size:12px}
+    textarea,input[type="text"],input[type="url"],input[type="file"],input[type="number"]{width:100%;background:#0d0d0d;color:var(--text);border:1px solid #555;border-radius:4px;padding:10px}
+    textarea{min-height:220px;resize:vertical}
+    .cover{width:100%;max-height:280px;object-fit:contain;border-radius:6px;border:1px solid var(--border);background:#111}
+    .pin-img{width:100%;height:160px;object-fit:cover;border-bottom:1px solid #333;border-radius:4px 4px 0 0;background:#111}
+    .section{margin-top:16px}
+    .detailBox{margin-top:16px;padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:6px}
+    #splash{position:fixed;inset:0;background:linear-gradient(135deg,#f5e9d5 0%,#faf6f0 100%);z-index:9999;display:flex;align-items:center;justify-content:center}
+    #splash.hidden{display:none!important}
+    .splash-content{text-align:center;max-width:700px;padding:20px;position:relative}
+    .splash-image{margin-bottom:24px;position:relative;display:inline-block}
+    .splash-image img{max-width:100%;height:auto;max-height:72vh;object-fit:contain;box-shadow:0 10px 40px rgba(139,0,0,.2);border-radius:4px;display:block}
+    .cover-upload-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease;border-radius:4px;cursor:pointer}
+    .splash-image:hover .cover-upload-overlay{opacity:1}
+    .cover-upload-overlay label{color:#f5e9d5;font-family:Montserrat,sans-serif;font-size:14px;font-weight:600;cursor:pointer;padding:12px 24px;border:1px dashed #f5e9d5;border-radius:4px;background:rgba(0,0,0,0.4)}
+    .proceed-btn{background:#1a1a1a;color:#f5e9d5;border:2px solid #8B0000;padding:16px 48px;font-family:Montserrat,sans-serif;font-size:16px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .3s ease;margin-top:12px}
+    .proceed-btn:hover{background:#8B0000;box-shadow:0 8px 20px rgba(139,0,0,.3);transform:translateY(-2px)}
+    .chapter-nav{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;overflow-x:auto;padding-bottom:8px;align-items:center}
+    .ch-btn{background:#333;color:#ddd;border:1px solid #555;padding:6px 12px;font-size:11px;cursor:pointer;border-radius:3px;white-space:nowrap;transition:all .2s}
+    .ch-btn.active{background:#8B0000;color:#f5e9d5;border-color:#8B0000}
+    .ch-btn:hover{border-color:#8B0000}
+    .add-chapter-btn{background:#220707;color:#f5e9d5;border:1px dashed #8B0000;padding:6px 12px;font-size:11px;cursor:pointer;border-radius:3px;white-space:nowrap;transition:all .2s}
+    .add-chapter-btn:hover{background:#8B0000}
+    .pin-card.dragging{opacity:.5}
+    .pin-card.dragover{transform:scale(1.02);border-color:#f5e9d5!important}
+    .notice{padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:#111;color:var(--muted);margin-bottom:12px}
+    .general-comment{background:#1a1a1a;border-left:3px solid #8B0000;padding:12px;margin:8px 0;border-radius:4px}
+    .general-comment-author{font-weight:bold;color:#8B0000;font-size:13px}
+    .general-comment-text{color:#ddd;font-size:13px;margin:6px 0}
+    .media-embed{margin-top:12px;border-radius:4px;overflow:hidden;border:1px solid var(--border);background:#111}
+    .media-embed iframe{width:100%;border:0;display:block}
+    .carousel-container{position:relative;width:100%;background:#111;border-radius:6px;border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;align-items:center}
+    .carousel-slide{width:100%;height:260px;display:flex;align-items:center;justify-content:center;background:#0d0d0d}
+    .carousel-slide img{max-width:100%;max-height:100%;object-fit:contain}
+    .carousel-nav-row{display:flex;justify-content:space-between;align-items:center;width:100%;padding:8px 16px;background:var(--panel2);border-top:1px solid var(--border)}
+    .outline-doc{background:#0d0d0d;border:1px solid var(--border);border-radius:6px;padding:24px;line-height:1.7;max-height:75vh;overflow-y:auto}
+    .outline-doc h2{color:#8B0000;margin-top:24px;border-bottom:1px solid var(--border);padding-bottom:6px;font-family:'Cormorant Garamond',serif;font-size:24px}
+    .outline-doc h3{color:var(--text);margin-top:18px;font-family:'Montserrat',sans-serif;font-size:16px}
+    .outline-doc ul{margin:6px 0 16px 20px;color:#ccc;font-size:14px}
+    .outline-doc li{margin-bottom:6px}
+  </style>
+</head>
+<body>
+  <div id="splash">
+    <div class="splash-content">
+      <div class="splash-image">
+        <img id="splashImg" src="" alt="Book Cover">
+        <div class="cover-upload-overlay" title="Change Cover">
+          <label for="coverUpload">Change Cover Image</label>
+        </div>
+      </div>
+      <input id="coverUpload" type="file" accept="image/*" class="hidden">
+      <div>
+        <button class="proceed-btn" id="proceedBtn">Proceed with Caution</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="boot" class="center" style="min-height:100vh;">
+    <div class="panel" style="width:min(700px, calc(100% - 32px));">
+      <h1>The Vault</h1>
+      <p class="small">Loading your workspace...</p>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <div class="topbar">
+      <div class="row">
+        <button class="btn secondary" id="homeBtn">Home</button>
+        <button class="btn secondary" id="backBtn">Back</button>
+      </div>
+      <div class="row">
+        <button class="tab active" data-view="pins">Pins</button>
+        <button class="tab" data-view="outline">Outline</button>
+        <button class="tab" data-view="beats">Beats</button>
+        <button class="tab" data-view="editor">Chapter</button>
+        <button class="tab" data-view="coverTab" id="coverTabBtn" style="border-color:#8B0000;color:#f5e9d5;background:#220707;">Book Cover</button>
+      </div>
+      <div class="row right">
+        <button class="btn secondary" id="copyBtn">Copy</button>
+        <button class="btn secondary" id="ttsBtn"> Speak</button>
+        <button class="btn secondary" id="distractionBtn">Focus</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div id="statusBar" class="notice">Ready.</div>
+
+      <div id="pinsSection" class="section">
+        <div class="row" style="justify-content:space-between;">
+          <div>
+            <h2>Visual Board</h2>
+            <p class="small">Drag to rearrange • Upload images • Organize ideas</p>
+          </div>
+          <div class="row">
+            <input id="pinTitle" type="text" placeholder="Pin title" style="width:180px;">
+            <input id="pinCategory" type="text" placeholder="Category" style="width:140px;">
+            <input id="pinFile" type="file" accept="image/*">
+            <button class="btn" id="addPinBtn">Add Pin</button>
+          </div>
+        </div>
+        <div id="pinsGrid" class="cards"></div>
+
+        <div id="pinDetail" class="detailBox hidden">
+          <div class="row" style="justify-content:space-between;">
+            <h3 id="detailTitle">Pin Detail</h3>
+            <button class="btn secondary" id="closeDetailBtn">Close</button>
+          </div>
+          
+          <div id="pinCarouselContainer" class="carousel-container" style="margin:12px 0;">
+            <div class="carousel-slide">
+              <img id="carouselImg" src="" alt="Pin item">
+            </div>
+            <div class="carousel-nav-row">
+              <button class="btn secondary" id="prevSlideBtn"> Prev</button>
+              <span id="carouselCounter" class="small" style="font-weight:600;color:var(--text);">1 / 1</span>
+              <button class="btn secondary" id="nextSlideBtn">Next </button>
+            </div>
+          </div>
+          <p id="carouselNote" class="small" style="margin:8px 0 16px;text-align:center;font-style:italic;"></p>
+
+          <div class="row" style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+            <input id="subPinTitle" type="text" placeholder="Sub-pin title" style="width:200px;">
+            <input id="subPinNote" type="text" placeholder="Note" style="width:240px;">
+            <input id="subPinFile" type="file" accept="image/*">
+            <button class="btn" id="addSubPinBtn">Add Sub-Pin / Image</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="outlineView" class="section hidden">
+        <div class="row" style="justify-content:space-between;">
+          <div><h2>Master Comprehensive Outline</h2></div>
+          <div class="small">Reference Document</div>
+        </div>
+        <div class="outline-doc" id="outlineDocContent">
+          <h2>ACT I: THE MUNDANE BLOOM (Chapters 1–8)</h2>
+          <h3>Chapter 1: Morning Ritual</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett</li>
+            <li><strong>Focus:</strong> Opens cleanly in the mundane rhythm of her morning (no nightmare). Marsai closing the drapes, serum + ginger tea ritual, bleeding during a yawn, Marsai's healing bite/prick, fang caps, gold jewelry, and heading to work. Establishes her ancient, controlled existence woven with everyday supernatural texture.</li>
+          </ul>
+          <h3>Chapter 2: Coffee Shop Collision</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett</li>
+            <li><strong>Focus:</strong> Changing scrubs, prepping phlebotomy supplies, heading to the hospital's Kozy Kafe satellite. Dahlia working the counter. Mika at the condiment counter (diamond canines, teal eyes). Eye contact triggers an instant, physical fated-mate response (orgasmic reaction). Mika blows on her collarbone: <em>"I luh that shit."</em> Scarlett processes the electric shock with Dahlia afterward.</li>
+          </ul>
+          <h3>Chapter 3: PICU Work & The Foreground</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett</li>
+            <li><strong>Focus:</strong> Called to the pediatric ICU for a 6-month-old under UV lights. Showcases her clinical competence, ultrasound access, and deep humanity. Dr. Mika Murdoch arrives, captivated by her care and presence. Internal conflict: he should focus on business, but she consumes his attention.</li>
+          </ul>
+          <h3>Chapter 4: Council Meeting (Lysander + Forefathers)</h3>
+          <ul>
+            <li><strong>POV:</strong> Lysander, Cael (voice), Ronan (thought)</li>
+            <li><strong>Focus:</strong> Murdoch estate formal council. Lysander (rotting colonizer in a passing Black disguise) and uncles exhibiting Blue Decay (e.g., Lysander's nose falling into his tea, drawing a deadpan joke from Cael). They discuss the Delta Axis Group merger and the desperate need for pure bloodlines to save their decaying synthetic empire.</li>
+          </ul>
+          <h3>Chapter 5: Scarlett's First Nightmare</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett</li>
+            <li><strong>Focus:</strong> Scarlett gasps awake from a clearer nightmare—a phantom rope around her neck and a man reaching for her. Marsai finds her and whispers the warning: <em>"When you remember, he will too. And then everything breaks."</em></li>
+          </ul>
+          <h3>Chapter 6: Hospital Encounters Escalate</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett + Mika (rapid intercutting)</li>
+            <li><strong>Focus:</strong> Rapid-fire run-ins in elevators, lab hallways, and supply closets. Mika invents reasons to be near her; Scarlett fights the pull. When handing over a blood sample, their hands touch, sparking a tiny sensory flash of 1863—a hand reaching, a name, a vow.</li>
+          </ul>
+          <h3>Chapter 7: Girls Together + Blood Covenant</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett, Dahlia, Lorelei (shared)</li>
+            <li><strong>Focus:</strong> Warm, funny Black joy masking underlying tension. Lorelei declares they are soldiers, not victims; Dahlia notes they are walking into a lion's den. In a private bathroom, they execute a sacred pinky blood oath: <strong>Consummate first, bite later.</strong> They weaponize the out-of-order sequence to retain bodily control.</li>
+          </ul>
+          <h3>Chapter 8: Betrothal Ball Announcement</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett</li>
+            <li><strong>Focus:</strong> Word arrives that the Betrothal Ball is tomorrow night, where the corporate merger and betrothal pairings will officially drop. Dread and readiness mix as all three women prepare mentally for the trap.</li>
+          </ul>
+
+          <h2>ACT II: THE MACHINERY & THE SEDUCTION (Chapters 9–18)</h2>
+          <h3>Chapter 9: Mika's Joy & Scarlett's Rejection</h3>
+          <ul>
+            <li><strong>POV:</strong> Mika (primary) + Scarlett (ending)</li>
+            <li><strong>Focus:</strong> Mika brings Scarlett coffee, happy and trying to ask her to the ball. Scarlett cold-rejects him without explanation to protect the mission. Devastated, Mika mutters <em>"F*** it"</em> and blindly accepts his arranged betrothal.</li>
+          </ul>
+          <h3>Chapter 10: Betrothal Ball Night</h3>
+          <ul>
+            <li><strong>POV:</strong> All six intercut</li>
+            <li><strong>Focus:</strong> Weaponized antebellum opulence. High-society gala masking a blood trap, complete with hidden financial asset freezes executed by the human consorts and the sensory olfactory tell of wild Delta jasmine colliding with sterile synthetic blood. Unmasking reveals the exact pairings: Scarlett/Mika, Dahlia/Cael, and Lorelei/Ronan. Cosmic alignment masquerading as business strategy.</li>
+          </ul>
+          <h3>Chapter 11: Bathroom Scene & Blood Covenant (Reprise)</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett, Dahlia, Lorelei</li>
+            <li><strong>Focus:</strong> The women escape briefly to the restroom to reaffirm their pinky blood oath under magical privacy. They lock in their vow to break the prophecy's expected order.</li>
+          </ul>
+          <h3>Chapter 12: Dancing & The Lounge</h3>
+          <ul>
+            <li><strong>POV:</strong> All six intercut</li>
+            <li><strong>Focus:</strong> The three couples dance and migrate to a private lounge. Awkward, high-tension attempts at connection, bubbling with curiosity and undeniable magnetic chemistry.</li>
+          </ul>
+          <h3>Chapter 13: Ronan & Cael Professional Lives</h3>
+          <ul>
+            <li><strong>POV:</strong> Ronan + Cael (intercut)</li>
+            <li><strong>Focus:</strong> Ronan in finance, tormented by acute colorism, maternal rejection, and self-hatred that he projects outward onto Lorelei. Cael in the lab, calibrating synthetic blood while his predatory nature recognizes Dahlia's authentic, untamed freedom.</li>
+          </ul>
+          <h3>Chapter 14: Dahlia & Lorelei (Inside Murdoch Chapters)</h3>
+          <ul>
+            <li><strong>POV:</strong> Dahlia + Lorelei</li>
+            <li><strong>Focus:</strong> Dahlia’s sensual confidence and sex-positive liberation matching Cael's dark energy. Lorelei's unflinching, powerful gaze staring down Ronan's colorism. Women acting as seers and master architects.</li>
+          </ul>
+          <h3>Chapter 15: Walk in the Park (Mika & Scarlett)</h3>
+          <ul>
+            <li><strong>POV:</strong> Mika + Scarlett</li>
+            <li><strong>Focus:</strong> A quiet, highly charged private moment before wedding prep intensifies. Mika is confused by her sudden distance; Scarlett fights her internal war. Ancient recognition hums beneath the surface.</li>
+          </ul>
+          <h3>Chapter 16: Council Meeting #2 (Brothers + Forefathers)</h3>
+          <ul>
+            <li><strong>POV:</strong> Lysander, Cael, Ronan, Mika</li>
+            <li><strong>Focus:</strong> Brothers confronted with "moral obligation" and "saving the family business" as Blue Decay accelerates. They accept the betrothal blindly, locked as prisoners to Murdoch obligation.</li>
+          </ul>
+          <h3>Chapter 17: Wedding Prep Montage</h3>
+          <ul>
+            <li><strong>POV:</strong> Girls + Brothers intercut</li>
+            <li><strong>Focus:</strong> Tux fittings, dress fittings, and moving into separate wings of the Murdoch estate under old regency verification rules. The machinery of patriarchal control grinds toward the wedding night.</li>
+          </ul>
+          <h3>Chapter 18: Wedding Day & Night</h3>
+          <ul>
+            <li><strong>POV:</strong> All six intercut</li>
+            <li><strong>Focus:</strong> The formal ceremony and corporate-wrapped reception conclude. In their private chambers, the final moments before the trap springs. Mika tells Scarlett he feels like he knows her; she replies that he just doesn't remember yet.</li>
+          </ul>
+
+          <h2>ACT III: THE REVERSAL & THE RECKONING (Chapters 19–27)</h2>
+          <h3>Chapter 19: Consummation & Memory Flood (Part 1 — The Act)</h3>
+          <ul>
+            <li><strong>POV:</strong> All six simultaneous intercut</li>
+            <li><strong>Focus:</strong> <strong>The women consummate first.</strong> Pure virginal blood enters the men's systems, followed immediately by the bite. <strong>The psychic memory flood hits:</strong>
+              <ul>
+                <li><em>Mika:</em> Sees 1863, jumping the broom, the hanging, Scarlett's survival, and 300 years of waiting.</li>
+                <li><em>Cael:</em> Sees his predatory darkness matched and validated by Dahlia.</li>
+                <li><em>Ronan:</em> Sees his internalized colorism shatter as he looks into Lorelei's burnished skin and sees his own face.</li>
+                <li><em>Collective:</em> Realize Lysander is a rotting European colonizer, the forefathers were assassins, the 50-year serum is chemical enslavement, and Blue Decay is killing them.</li>
+              </ul>
+            </li>
+          </ul>
+          <h3>Chapter 20: The Memory Flood (Part 2 — Aftermath & Revelation)</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett (primary) + Brothers</li>
+            <li><strong>Focus:</strong> Scarlett reciprocal flood gives Mika her full 300-year history. Temporary incapacitation from memory overload, leaving the men transformed, furious, and fully awake.</li>
+          </ul>
+          <h3>Chapter 21: Scarlett's Grandmother Revelation (Cottage Flashback)</h3>
+          <ul>
+            <li><strong>POV:</strong> Scarlett + Grandmother voice/memory</li>
+            <li><strong>Focus:</strong> Girls flee immediately to their great-great-great grandmother's hidden rural Arkansas cottage. Elders explain pre-colonial matriarchy, infiltration, plantation blood extraction, and the origins of the memory serum. Scarlett's nightmares and the pull to Mika finally make complete historical sense.</li>
+          </ul>
+          <h3>Chapter 22: Murdoch Brothers' Rampage (Part 1 — The Estate)</h3>
+          <ul>
+            <li><strong>POV:</strong> Mika (primary) + Ronan/Cael</li>
+            <li><strong>Focus:</strong> Realizing the women have fled, the brothers launch a violent reclamation. Lysander attempts to flee but succumbs naturally as Blue Decay and memory overload collapse his synthetic empire.</li>
+          </ul>
+          <h3>Chapter 23: Seraphine's Intervention & Truth</h3>
+          <ul>
+            <li><strong>POV:</strong> Ronan (primary) + Mika/Cael</li>
+            <li><strong>Focus:</strong> Their mother Seraphine waits at 4 AM to reveal her own biracial complicity and participation in their memory suppression. In a poetic reckoning of generational trauma, <strong>Ronan kills her</strong>, destroying the literal source of his colorism and reclaiming his power.</li>
+          </ul>
+          <h3>Chapter 24: Uncle Pursuit & Elimination</h3>
+          <ul>
+            <li><strong>POV:</strong> Mika + brothers</li>
+            <li><strong>Focus:</strong> Pursuing fleeing uncles as the Murdoch estate burns. Uncles die in motion as their synthetic bodies reject existence, completely eradicating the patriarchal line.</li>
+          </ul>
+          <h3>Chapter 25: The Brothers' Journey to the Cottage</h3>
+          <ul>
+            <li><strong>POV:</strong> Mika + brothers</li>
+            <li><strong>Focus:</strong> Tracking the fated-mate scent through the moss-dripped Delta landscape. Brothers process grief and resolve: Ronan with Lorelei in mind, Cael matching Dahlia, Mika racing toward his 300-year reunion.</li>
+          </ul>
+          <h3>Chapter 26: The Reunion (Cottage)</h3>
+          <ul>
+            <li><strong>POV:</strong> All six intercut</li>
+            <li><strong>Focus:</strong> The men arrive not as invaders, but as vulnerable allies. Mika is terrified of losing Scarlett again; Ronan openly confesses his colorism and brokenness to Lorelei, who promises to love him through it. Mothers stand down as the men officially choose the women.</li>
+          </ul>
+          <h3>Chapter 27: Closing & Liberation</h3>
+          <ul>
+            <li><strong>POV:</strong> Mika + Scarlett</li>
+            <li><strong>Focus:</strong> Private cottage scene. Mika reaffirms his choice to burn his family down; Scarlett notes he already chose 300 years ago. The rope around her neck is gone; the serum is broken. Harriet Tubman reimagined—she gets her HEA, her husband didn't remarry, and she finally gets to <em>rest</em>.</li>
+          </ul>
+
+          <h2>EPILOGUE: THE NEW LINEAGE</h2>
+          <ul>
+            <li><strong>POV:</strong> Narrative voice</li>
+            <li><strong>Focus:</strong> Years later. Delta Axis Group and reclaimed Murdoch assets form a new corporate structure centered on true healing. The three couples live together in restored harmony. Scarlett is pregnant (Baby Rao born at 3:47 AM with auburn hair). Mika proposes publicly at Club Thrill in all-black dominatrix style. Wrynn is 13 weeks pregnant with a girl. The three Houses—Breath, Tide, and Fire—are fully restored, free of synthetic serums and colonizer death-clocks.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="beatsView" class="section hidden">
+        <div class="row" style="justify-content:space-between;">
+          <div><h2>Beats</h2></div>
+          <div class="row" style="flex-wrap:wrap;gap:8px;">
+            <input id="beatChNum" type="number" placeholder="Ch #" style="width:70px;">
+            <input id="beatNum" type="number" placeholder="Beat #" style="width:70px;">
+            <input id="beatTitle" type="text" placeholder="Beat title" style="width:140px;">
+            <input id="beatGoal" type="text" placeholder="Goal" style="width:130px;">
+            <input id="beatConflict" type="text" placeholder="Conflict" style="width:130px;">
+            <input id="beatOutcome" type="text" placeholder="Outcome" style="width:130px;">
+            <button class="btn" id="addBeatBtn">Add Beat</button>
+          </div>
+        </div>
+        <div id="beatsList" class="cards" style="margin-top:16px;"></div>
+      </div>
+
+      <div id="editorView" class="section hidden grid2">
+        <div class="card">
+          <div class="row" style="justify-content:space-between;margin-bottom:12px;">
+            <h2 id="editorHeading">Chapter</h2>
+            <button class="btn secondary" id="saveChapterBtn">Save Chapter</button>
+          </div>
+          <div class="chapter-nav" id="chapterNav"></div>
+          <input id="chapterTitle" type="text" placeholder="Chapter title" style="margin-bottom:10px;">
+          <input id="chapterMeta" type="text" placeholder="POV / Act / Notes" style="margin-bottom:10px;">
+          <textarea id="chapterText" placeholder="Write your chapter here..."></textarea>
+          
+          <div class="row" style="margin-top:12px;">
+            <input id="spotifyUrl" type="url" placeholder="Spotify URL (e.g. https://open.spotify.com/track/...)">
+            <input id="youtubeUrl" type="url" placeholder="YouTube URL (e.g. https://www.youtube.com/watch?v=...)">
+          </div>
+
+          <div id="spotifyEmbedContainer" class="media-embed hidden"></div>
+          <div id="youtubeEmbedContainer" class="media-embed hidden"></div>
+        </div>
+
+        <div class="card" id="commentsPanel">
+          <h3>Chapter Comments & Notes</h3>
+          <input id="commentAuthor" type="text" placeholder="Your name" style="margin-bottom:8px;">
+          <textarea id="generalCommentText" placeholder="Add a comment or note for this chapter..." style="min-height:80px;margin-bottom:8px;"></textarea>
+          <button class="btn" id="addGeneralCommentBtn" style="width:100%;margin-bottom:14px;">Post Comment</button>
+          <div style="border-top:1px solid var(--border);padding-top:12px;">
+            <div id="generalCommentsContainer" style="max-height:420px;overflow-y:auto;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const STORAGE_KEY = 'tbbu-vault-v6';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSXuWOrB8HNUbMh4MGlW078dHOj56-szA",
+    authDomain: "blood-between-us-vault-74d22.firebaseapp.com",
+    databaseURL: "https://blood-between-us-vault-74d22-default-rtdb.firebaseio.com",
+    projectId: "blood-between-us-vault-74d22",
+    storageBucket: "blood-between-us-vault-74d22.firebasestorage.app",
+    messagingSenderId: "275894924275",
+    appId: "1:275894924275:web:e633336434f7fb88d11886"
+  };
+
+  const CLOUDINARY_CONFIG = {
+    cloudName: 'Tbbuwriting',
+    uploadPreset: 'Tbbuwriting'
+  };
+
+  const DEFAULTS = {
+    coverUrl: '',
+    splashTitle: 'The Blood Between Us',
+    splashSubtitle: 'A private writing vault',
+    pins: [],
+    outline: [],
+    beats: [],
+    chapters: [],
+    generalComments: {}
+  };
+
+  const state = {
+    view: 'pins',
+    activePinId: null,
+    activeChapterId: null,
+    carouselIndex: 0,
+    draggedPin: null,
+    data: structuredClone(DEFAULTS),
+    db: null
+  };
+
+  function escapeHtml(str){
+    return String(str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  function setStatus(msg){ $('#statusBar').textContent = msg; }
+
+  function persistLocal(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+  }
+
+  async function persist(){
+    persistLocal();
+    try{
+      if(state.db) await state.db.ref('vault').set(state.data);
+      setStatus('Saved.');
+    }catch(e){
+      setStatus('Saved locally. Firebase sync failed.');
+    }
+  }
+
+  async function load(){
+    try{
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if(saved) state.data = { ...structuredClone(DEFAULTS), ...JSON.parse(saved) };
+    }catch(e){}
+
+    try{
+      if(!firebase.apps.length){
+        firebase.initializeApp(firebaseConfig);
+      }
+      state.db = firebase.database();
+      const snap = await state.db.ref('vault').get();
+      if(snap.exists()){
+        const remote = snap.val();
+        state.data = { ...structuredClone(DEFAULTS), ...remote };
+      }
+    }catch(e){}
+
+    $('#splashImg').src = state.data.coverUrl || '';
+    if(state.data.chapters.length && !state.activeChapterId){
+      state.activeChapterId = state.data.chapters[0].id;
+    }
+    render();
+  }
+
+  async function toDataUrl(file){
+    return await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function uploadImage(file){
+    if(!file) return '';
+    try{
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
+        method: 'POST',
+        body: fd
+      });
+      const data = await res.json();
+      if(res.ok && data.secure_url) return data.secure_url;
+    }catch(e){}
+    return await toDataUrl(file);
+  }
+
+  function proceedToVault(){
+    $('#splash').classList.add('hidden');
+    $('#boot').classList.add('hidden');
+    $('#app').classList.remove('hidden');
+  }
+
+  function returnToSplash(){
+    $('#app').classList.add('hidden');
+    $('#boot').classList.add('hidden');
+    $('#splash').classList.remove('hidden');
+  }
+
+  function setView(view){
+    if(view === 'coverTab'){
+      returnToSplash();
+      return;
+    }
+    state.view = view;
+    $('#pinsSection').classList.toggle('hidden', view !== 'pins');
+    $('#outlineView').classList.toggle('hidden', view !== 'outline');
+    $('#beatsView').classList.toggle('hidden', view !== 'beats');
+    $('#editorView').classList.toggle('hidden', view !== 'editor');
+    $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+    if(view === 'editor'){
+      if(!state.activeChapterId && state.data.chapters.length){
+        state.activeChapterId = state.data.chapters[0].id;
+      }
+      if(state.activeChapterId){
+        openChapter(state.activeChapterId);
+      }
+    }
+  }
+
+  function getActivePin(){
+    return state.data.pins.find(p => p.id === state.activePinId) || null;
+  }
+
+  function renderPins(){
+    $('#pinsGrid').innerHTML = state.data.pins.map(pin => `
+      <div class="card pin-card" draggable="true" data-pin-id="${pin.id}" style="cursor:grab;">
+        ${pin.imageUrl ? `<img class="pin-img" src="${pin.imageUrl}" alt="">` : `<div class="pin-img" style="display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`}
+        <h3 style="margin:12px 0 4px;font-size:16px;">${escapeHtml(pin.title || 'Untitled')}</h3>
+        <p class="small" style="margin:0 0 8px;">${escapeHtml(pin.category || '')}</p>
+        <p class="small" style="margin:0 0 12px;color:#999;font-size:11px;">${escapeHtml(pin.note || '')}</p>
+        <div class="row" style="margin-top:10px;">
+          <button class="btn secondary" data-pin-open="${pin.id}">Open</button>
+          <button class="btn secondary" data-pin-edit="${pin.id}">Edit</button>
+          <button class="btn secondary" data-pin-del="${pin.id}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    $$('#pinsGrid [data-pin-id]').forEach(card => {
+      card.addEventListener('dragstart', e => {
+        state.draggedPin = card;
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
+      card.addEventListener('dragover', e => {
+        e.preventDefault();
+        card.classList.add('dragover');
+      });
+      card.addEventListener('dragleave', () => card.classList.remove('dragover'));
+      card.addEventListener('drop', e => {
+        e.preventDefault();
+        card.classList.remove('dragover');
+        if(!state.draggedPin || state.draggedPin === card) return;
+        const a = state.data.pins.findIndex(p => p.id === Number(state.draggedPin.dataset.pinId));
+        const b = state.data.pins.findIndex(p => p.id === Number(card.dataset.pinId));
+        [state.data.pins[a], state.data.pins[b]] = [state.data.pins[b], state.data.pins[a]];
+        persist();
+        renderPins();
+      });
+    });
+  }
+
+  function getActivePinImages(pin){
+    const list = [];
+    if(pin.imageUrl) list.unshift({ url: pin.imageUrl, title: pin.title, note: pin.note });
+    if(pin.subPins){
+      pin.subPins.forEach(sp => {
+        if(sp.imageUrl) list.push({ url: sp.imageUrl, title: sp.title, note: sp.note });
+      });
+    }
+    return list;
+  }
+
+  function renderPinDetail(){
+    const pin = getActivePin();
+    const detail = $('#pinDetail');
+    if(!pin){
+      detail.classList.add('hidden');
+      return;
+    }
+    detail.classList.remove('hidden');
+    $('#detailTitle').textContent = pin.title || 'Untitled';
+    
+    const images = getActivePinImages(pin);
+    if(state.carouselIndex >= images.length) state.carouselIndex = 0;
+    
+    const carouselImg = $('#carouselImg');
+    const carouselCounter = $('#carouselCounter');
+    const carouselNote = $('#carouselNote');
+    
+    if(images.length > 0){
+      const curr = images[state.carouselIndex];
+      carouselImg.src = curr.url;
+      carouselImg.style.display = 'block';
+      carouselCounter.textContent = `${state.carouselIndex + 1} / ${images.length}`;
+      carouselNote.textContent = (curr.title ? curr.title + ' — ' : '') + (curr.note || '');
+    } else {
+      carouselImg.style.display = 'none';
+      carouselCounter.textContent = '0 / 0';
+      carouselNote.textContent = 'No images attached to this pin yet. Add one below!';
+    }
+  }
+
+  function renderChapterNav(){
+    const navHtml = state.data.chapters.map((ch, idx) => `
+      <button class="ch-btn ${ch.id === state.activeChapterId ? 'active' : ''}" data-open-chapter="${ch.id}">Ch ${idx + 1}</button>
+    `).join('');
+    $('#chapterNav').innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
+  }
+
+  function renderMediaEmbeds(spotifyUrl, youtubeUrl){
+    const spotCont = $('#spotifyEmbedContainer');
+    const ytCont = $('#youtubeEmbedContainer');
+
+    if(spotifyUrl && spotifyUrl.includes('spotify.com')){
+      let embedUrl = spotifyUrl;
+      if(embedUrl.includes('/track/')){
+        embedUrl = embedUrl.replace('/track/', '/embed/track/');
+      } else if(embedUrl.includes('/album/')){
+        embedUrl = embedUrl.replace('/album/', '/embed/album/');
+      } else if(embedUrl.includes('/playlist/')){
+        embedUrl = embedUrl.replace('/playlist/', '/embed/playlist/');
+      }
+      spotCont.innerHTML = `<iframe src="${embedUrl}?utm_source=generator&theme=0" width="100%" height="80" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+      spotCont.classList.remove('hidden');
+    } else {
+      spotCont.innerHTML = '';
+      spotCont.classList.add('hidden');
+    }
+
+    if(youtubeUrl && (youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be'))){
+      let ytId = '';
+      if(youtubeUrl.includes('youtu.be/')){
+        ytId = youtubeUrl.split('youtu.be/')[1].split('?')[0];
+      } else if(youtubeUrl.includes('watch?v=')){
+        ytId = youtubeUrl.split('watch?v=')[1].split('&')[0];
+      }
+      if(ytId){
+        ytCont.innerHTML = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${ytId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+        ytCont.classList.remove('hidden');
+      } else {
+        ytCont.innerHTML = '';
+        ytCont.classList.add('hidden');
+      }
+    } else {
+      ytCont.innerHTML = '';
+      ytCont.classList.add('hidden');
+    }
+  }
+
+  function openChapter(chId){
+    state.activeChapterId = chId;
+    let ch = state.data.chapters.find(c => c.id === chId);
+    if(!ch && state.data.chapters.length > 0){
+      ch = state.data.chapters[0];
+      state.activeChapterId = ch.id;
+    }
+    
+    if(ch){
+      $('#editorHeading').textContent = ch.title || 'Chapter';
+      $('#chapterTitle').value = ch.title || '';
+      $('#chapterMeta').value = ch.meta || '';
+      $('#chapterText').value = ch.content || '';
+      $('#spotifyUrl').value = ch.spotifyUrl || '';
+      $('#youtubeUrl').value = ch.youtubeUrl || '';
+      renderMediaEmbeds(ch.spotifyUrl, ch.youtubeUrl);
+    } else {
+      $('#editorHeading').textContent = 'Chapter';
+      $('#chapterTitle').value = '';
+      $('#chapterMeta').value = '';
+      $('#chapterText').value = '';
+      $('#spotifyUrl').value = '';
+      $('#youtubeUrl').value = '';
+      renderMediaEmbeds('', '');
+    }
+    renderChapterNav();
+    renderGeneralComments();
+    setView('editor');
+  }
+
+  function addNewChapter(){
+    const newId = Date.now();
+    const chNum = state.data.chapters.length + 1;
+    const newCh = {
+      id: newId,
+      title: `Chapter ${chNum}`,
+      meta: '',
+      content: '',
+      spotifyUrl: '',
+      youtubeUrl: ''
+    };
+    state.data.chapters.push(newCh);
+    openChapter(newId);
+    persist();
+    setStatus(`Created Chapter ${chNum}.`);
+  }
+
+  function renderGeneralComments(){
+    const container = $('#generalCommentsContainer');
+    if(!container) return;
+    if(state.activeChapterId == null){
+      container.innerHTML = '<div class="small">Save or select a chapter to view comments.</div>';
+      return;
+    }
+    const chId = state.activeChapterId;
+    if(!state.data.generalComments) state.data.generalComments = {};
+    const comments = state.data.generalComments[chId] || [];
+    container.innerHTML = comments.map(c => `
+      <div class="general-comment">
+        <div class="general-comment-author">${escapeHtml(c.author)}</div>
+        <div class="general-comment-text">${escapeHtml(c.text)}</div>
+        <div class="row" style="justify-content:flex-end;margin-top:6px;">
+          <button class="btn secondary" style="padding:4px 8px;font-size:11px;" data-del-comment="${c.id}">Delete</button>
+        </div>
+      </div>
+    `).join('') || '<div class="small">No comments yet for this chapter.</div>';
+  }
+
+  function speakChapter(){
+    const text = $('#chapterText').value.trim();
+    if(!text){ setStatus('Nothing to read.'); return; }
+    if(!('speechSynthesis' in window)){ setStatus('Speech not supported in this browser.'); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.92;
+    u.pitch = 1;
+    u.volume = 1;
+    const btn = $('#ttsBtn');
+    const orig = btn.textContent;
+    btn.textContent = 'Speaking...';
+    btn.disabled = true;
+    u.onend = () => {
+      btn.textContent = orig;
+      btn.disabled = false;
+      setStatus('Done.');
+    };
+    u.onerror = () => {
+      btn.textContent = orig;
+      btn.disabled = false;
+      setStatus('Speech error.');
+    };
+    speechSynthesis.speak(u);
+  }
+
+  function render(){
+    renderPins();
+    renderPinDetail();
+    $('#beatsList').innerHTML = state.data.beats.map(item => `
+      <div class="card">
+        <h3>Ch ${escapeHtml(item.chNum || '—')} • Beat ${escapeHtml(item.beatNum || '—')}</h3>
+        <p style="margin:4px 0 8px;font-weight:600;font-size:15px;">${escapeHtml(item.title || 'Untitled Beat')}</p>
+        <p class="small"><strong>Goal:</strong> ${escapeHtml(item.goal || 'None')}</p>
+        <p class="small"><strong>Conflict:</strong> ${escapeHtml(item.conflict || 'None')}</p>
+        <p class="small"><strong>Outcome:</strong> ${escapeHtml(item.outcome || 'None')}</p>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn secondary" data-beat-del="${item.id}">Delete</button>
+        </div>
+      </div>
+    `).join('');
+    renderChapterNav();
+    if(state.activeChapterId){
+      const ch = state.data.chapters.find(c => c.id === state.activeChapterId);
+      if(ch){
+        $('#editorHeading').textContent = ch.title || 'Chapter';
+        $('#chapterTitle').value = ch.title || '';
+        $('#chapterMeta').value = ch.meta || '';
+        $('#chapterText').value = ch.content || '';
+        $('#spotifyUrl').value = ch.spotifyUrl || '';
+        $('#youtubeUrl').value = ch.youtubeUrl || '';
+        renderMediaEmbeds(ch.spotifyUrl, ch.youtubeUrl);
+      }
+    }
+    renderGeneralComments();
+  }
+
+  function saveChapterData(){
+    const titleVal = $('#chapterTitle').value.trim() || 'Untitled';
+    const metaVal = $('#chapterMeta').value.trim();
+    const contentVal = $('#chapterText').value;
+    const spotifyVal = $('#spotifyUrl').value;
+    const youtubeVal = $('#youtubeUrl').value;
+
+    if(state.activeChapterId){
+      const ch = state.data.chapters.find(c => c.id === state.activeChapterId);
+      if(ch){
+        ch.title = titleVal;
+        ch.meta = metaVal;
+        ch.content = contentVal;
+        ch.spotifyUrl = spotifyVal;
+        ch.youtubeUrl = youtubeVal;
+      }else{
+        const newCh = { id: state.activeChapterId, title: titleVal, meta: metaVal, content: contentVal, spotifyUrl: spotifyVal, youtubeUrl: youtubeVal };
+        state.data.chapters.push(newCh);
+      }
+    }else{
+      const newCh = { id: Date.now(), title: titleVal, meta: metaVal, content: contentVal, spotifyUrl: spotifyVal, youtubeUrl: youtubeVal };
+      state.data.chapters.push(newCh);
+      state.activeChapterId = newCh.id;
+    }
+    renderMediaEmbeds(spotifyVal, youtubeVal);
+    persist();
+    render();
+    setStatus('Chapter saved.');
+  }
+
+  async function saveCover(file){
+    if(!file) return;
+    const url = await uploadImage(file);
+    state.data.coverUrl = url;
+    $('#splashImg').src = url;
+    await persist();
+    setStatus('Cover saved.');
+  }
+
+  window.addEventListener('load', () => {
+    load();
+
+    $('#proceedBtn').addEventListener('click', proceedToVault);
+    $('#coverUpload').addEventListener('change', e => {
+      if(e.target.files[0]) saveCover(e.target.files[0]);
+    });
+
+    $$('.tab').forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.view)));
+    $('#homeBtn').addEventListener('click', () => setView('pins'));
+    $('#backBtn',).addEventListener('click', () => setView('pins'));
+    $('#distractionBtn').addEventListener('click', () => $('#commentsPanel').classList.toggle('hidden'));
+    $('#ttsBtn').addEventListener('click', speakChapter);
+    $('#copyBtn').addEventListener('click', async () => {
+      const text = $('#chapterText').value || '';
+      if(!text) return;
+      await navigator.clipboard.writeText(text);
+      setStatus('Copied chapter text.');
+    });
+
+    $('#addPinBtn').addEventListener('click', async () => {
+      const title = $('#pinTitle').value.trim();
+      const category = $('#pinCategory').value.trim();
+      if(!title || !category){
+        setStatus('Fill in title and category.');
+        return;
+      }
+      const file = $('#pinFile').files[0];
+      const imageUrl = file ? await uploadImage(file) : '';
+      state.data.pins.unshift({ id: Date.now(), title, category, note: '', imageUrl, subPins: [] });
+      $('#pinTitle').value = '';
+      $('#pinCategory').value = '';
+      $('#pinFile').value = '';
+      await persist();
+      renderPins();
+      setStatus('Pin added.');
+    });
+
+    $('#addSubPinBtn').addEventListener('click', async () => {
+      const parent = getActivePin();
+      if(!parent){
+        setStatus('Open a pin first.');
+        return;
+      }
+      const title = $('#subPinTitle').value.trim();
+      const note = $('#subPinNote').value.trim();
+      const file = $('#subPinFile').files[0];
+      const subPin = { id: Date.now(), title, note, imageUrl: '' };
+      if(file) subPin.imageUrl = await uploadImage(file);
+      parent.subPins = parent.subPins || [];
+      parent.subPins.unshift(subPin);
+      $('#subPinTitle').value = '';
+      $('#subPinNote').value = '';
+      $('#subPinFile').value = '';
+      state.carouselIndex = 0;
+      await persist();
+      renderPinDetail();
+      setStatus('Sub-pin added.');
+    });
+
+    $('#closeDetailBtn').addEventListener('click', () => {
+      state.activePinId = null;
+      $('#pinDetail').classList.add('hidden');
+    });
+
+    $('#prevSlideBtn').addEventListener('click', () => {
+      const pin = getActivePin();
+      if(!pin) return;
+      const images = getActivePinImages(pin);
+      if(images.length <= 1) return;
+      state.carouselIndex = (state.carouselIndex - 1 + images.length) % images.length;
+      renderPinDetail();
+    });
+
+    $('#nextSlideBtn').addEventListener('click', () => {
+      const pin = getActivePin();
+      if(!pin) return;
+      const images = getActivePinImages(pin);
+      if(images.length <= 1) return;
+      state.carouselIndex = (state.carouselIndex + 1) % images.length;
+      renderPinDetail();
+    });
+
+    $('#addBeatBtn').addEventListener('click', async () => {
+      const chNum = $('#beatChNum').value.trim();
+      const beatNum = $('#beatNum').value.trim();
+      const title = $('#beatTitle').value.trim();
+      const goal = $('#beatGoal').value.trim();
+      const conflict = $('#beatConflict').value.trim();
+      const outcome = $('#beatOutcome').value.trim();
+      if(!title) return;
+      state.data.beats.unshift({ id: Date.now(), chNum, beatNum, title, goal, conflict, outcome });
+      $('#beatChNum').value = '';
+      $('#beatNum').value = '';
+      $('#beatTitle').value = '';
+      $('#beatGoal').value = '';
+      $('#beatConflict').value = '';
+      $('#beatOutcome').value = '';
+      await persist();
+      render();
+    });
+
+    $('#saveChapterBtn').addEventListener('click', saveChapterData);
+
+    $('#spotifyUrl').addEventListener('input', () => {
+      renderMediaEmbeds($('#spotifyUrl').value, $('#youtubeUrl').value);
+    });
+    $('#youtubeUrl').addEventListener('input', () => {
+      renderMediaEmbeds($('#spotifyUrl').value, $('#youtubeUrl').value);
+    });
+
+    $('#chapterTitle').addEventListener('input', () => {
+      if(!state.activeChapterId && state.data.chapters.length === 0){
+        state.activeChapterId = Date.now();
+      }
+    });
+
+    $('#addGeneralCommentBtn').addEventListener('click', async () => {
+      if(state.activeChapterId == null){
+        if(state.data.chapters.length > 0){
+          state.activeChapterId = state.data.chapters[0].id;
+        } else {
+          state.activeChapterId = Date.now();
+          state.data.chapters.push({
+            id: state.activeChapterId,
+            title: $('#chapterTitle').value.trim() || 'Untitled',
+            meta: $('#chapterMeta').value.trim(),
+            content: $('#chapterText').value,
+            spotifyUrl: $('#spotifyUrl').value,
+            youtubeUrl: $('#youtubeUrl').value
+          });
+        }
+      }
+      const chId = state.activeChapterId;
+      const author = $('#commentAuthor').value.trim() || 'Anonymous';
+      const text = $('#generalCommentText').value.trim();
+      if(!text) return;
+      if(!state.data.generalComments) state.data.generalComments = {};
+      if(!state.data.generalComments[chId]) state.data.generalComments[chId] = [];
+      state.data.generalComments[chId].unshift({ id: Date.now(), author, text });
+      $('#generalCommentText').value = '';
+      await persist();
+      renderGeneralComments();
+      setStatus('Comment posted.');
+    });
+
+    document.addEventListener('click', async e => {
+      if(e.target.id === 'addNewChapterBtn'){
+        addNewChapter();
+        return;
+      }
+
+      const t = e.target.closest('[data-open-chapter],[data-pin-open],[data-pin-del],[data-pin-edit],[data-subpin-del],[data-subpin-edit],[data-del-comment],[data-beat-del]');
+      if(!t) return;
+
+      const openChapterId = t.getAttribute('data-open-chapter');
+      if(openChapterId !== null){
+        openChapter(Number(openChapterId));
+        return;
+      }
+
+      const pinOpenId = t.getAttribute('data-pin-open');
+      if(pinOpenId !== null){
+        state.activePinId = Number(pinOpenId);
+        state.carouselIndex = 0;
+        renderPinDetail();
+        return;
+      }
+
+      const pinDelId = t.getAttribute('data-pin-del');
+      if(pinDelId !== null){
+        const idNum = Number(pinDelId);
+        state.data.pins = state.data.pins.filter(p => p.id !== idNum);
+        if(state.activePinId === idNum) state.activePinId = null;
+        await persist();
+        render();
+        return;
+      }
+
+      const pinEditId = t.getAttribute('data-pin-edit');
+      if(pinEditId !== null){
+        const pin = state.data.pins.find(p => p.id === Number(pinEditId));
+        if(!pin) return;
+        const a = prompt('Pin title:', pin.title || '');
+        if(a === null) return;
+        const b = prompt('Category:', pin.category || '');
+        if(b === null) return;
+        const c = prompt('Note:', pin.note || '');
+        pin.title = a.trim() || pin.title;
+        pin.category = b.trim() || pin.category;
+        if(c !== null) pin.note = c.trim();
+        await persist();
+        render();
+        return;
+      }
+
+      const subpinDelId = t.getAttribute('data-subpin-del');
+      if(subpinDelId !== null){
+        const parent = getActivePin();
+        if(!parent) return;
+        parent.subPins = (parent.subPins || []).filter(sp => sp.id !== Number(subpinDelId));
+        state.carouselIndex = 0;
+        await persist();
+        renderPinDetail();
+        return;
+      }
+
+      const subpinEditId = t.getAttribute('data-subpin-edit');
+      if(subpinEditId !== null){
+        const parent = getActivePin();
+        if(!parent) return;
+        const sp = (parent.subPins || []).find(x => x.id === Number(subpinEditId));
+        if(!sp) return;
+        const a = prompt('Sub-pin title:', sp.title || '');
+        if(a === null) return;
+        const b = prompt('Note:', sp.note || '');
+        sp.title = a.trim() || sp.title;
+        if(b !== null) sp.note = b.trim();
+        await persist();
+        renderPinDetail();
+        return;
+      }
+
+      const delCommentId = t.getAttribute('data-del-comment');
+      if(delCommentId !== null){
+        const chId = state.activeChapterId;
+        if(chId != null && state.data.generalComments?.[chId]){
+          state.data.generalComments[chId] = state.data.generalComments[chId].filter(c => c.id !== Number(delCommentId));
+          await persist();
+          renderGeneralComments();
+        }
+        return;
+      }
+
+      const beatDelId = t.getAttribute('data-beat-del');
+      if(beatDelId !== null){
+        state.data.beats = state.data.beats.filter(x => x.id !== Number(beatDelId));
+        await persist();
+        render();
+        return;
+      }
+    });
+  });
+</script>
+</body>
+</html>
