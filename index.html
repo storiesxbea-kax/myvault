@@ -70,6 +70,74 @@
     .outline-doc h3{color:var(--text);margin-top:18px;font-family:'Montserrat',sans-serif;font-size:16px}
     .outline-doc ul{margin:6px 0 16px 20px;color:#ccc;font-size:14px}
     .outline-doc li{margin-bottom:6px}
+    .chapter-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .chapter-photo-tools{display:grid;grid-template-columns:minmax(180px,1fr) minmax(160px,1fr) auto;gap:8px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+    .chapter-photo-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+    .chapter-photo-card{background:#111;border:1px solid var(--border);border-radius:5px;overflow:hidden}
+    .chapter-photo-card img{width:100%;height:120px;display:block;object-fit:cover;background:#0d0d0d}
+    .chapter-photo-card .photo-copy{padding:8px}
+    .chapter-photo-card .photo-caption{min-height:18px;color:#ccc;font-size:11px;overflow-wrap:anywhere}
+    @media (max-width:640px){.chapter-photo-tools{grid-template-columns:1fr}.chapter-photo-tools .btn{width:100%}}
+    .ch-btn[draggable="true"]{cursor:grab}
+    .ch-btn.dragging{opacity:.45}
+    .ch-btn.chapter-dragover{border-color:#f5e9d5;background:#3b0a0a;transform:translateY(-1px)}
+    .chapter-header{margin:0 0 12px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#111}
+    .chapter-header img{width:100%;max-height:280px;display:block;object-fit:cover;background:#0d0d0d}
+    .chapter-header-placeholder{min-height:72px;display:flex;align-items:center;justify-content:center;padding:12px;color:#777;text-align:center;font-size:12px}
+    .chapter-header-tools{display:grid;grid-template-columns:minmax(180px,1fr) auto auto;gap:8px;align-items:center;margin-bottom:12px}
+    .inline-reader{margin-top:16px;border:1px solid var(--border);border-radius:6px;background:#101010;overflow:hidden}
+    .inline-reader-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 12px;background:var(--panel2);border-bottom:1px solid var(--border)}
+    .inline-reader-content{padding:18px;max-height:440px;overflow-y:auto;line-height:1.8}
+    .commentable-paragraph{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #282828}
+    .commentable-paragraph:last-child{border-bottom:0}
+    .commentable-paragraph.has-comments .paragraph-copy{border-left:3px solid var(--accent);padding-left:10px}
+    .paragraph-copy{white-space:normal;overflow-wrap:anywhere}
+    .paragraph-comment-trigger{min-width:38px;padding:5px 8px;font-size:11px;white-space:nowrap}
+    .inline-comment-context{padding:9px 10px;margin:8px 0;border-radius:4px;background:#111;border:1px solid var(--border);font-size:12px;color:#ccc}
+    .inline-comment{background:#111;border-left:3px solid #8B0000;padding:10px;margin:8px 0;border-radius:4px}
+    .inline-comment-anchor{font-size:11px;color:#aaa;font-style:italic;margin:2px 0 8px}
+    @media (max-width:640px){.chapter-header-tools{grid-template-columns:1fr}.chapter-header-tools .btn{width:100%}.commentable-paragraph{grid-template-columns:1fr}.paragraph-comment-trigger{justify-self:start}}
+    .editor-mode-switch{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+    .mode-btn{background:#222;color:#ddd;border:1px solid #555;padding:6px 10px;border-radius:3px;cursor:pointer;font-size:11px}
+    .mode-btn.active{background:#8B0000;border-color:#8B0000;color:#f5e9d5}
+    .word-count{margin-left:auto;color:#bbb;font-family:Montserrat,sans-serif;font-size:11px;white-space:nowrap}
+    .chapter-organizer{padding:10px;margin-bottom:10px;background:#111;border:1px solid var(--border);border-radius:5px}
+    .chapter-nav-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+    .chapter-tab-name{flex:1;min-width:160px;width:auto!important}
+    .chapter-tab-group{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+    .chapter-tab-group .ch-btn{margin:0}
+    .chapter-nav{overflow-x:auto;overflow-y:hidden;padding-bottom:4px;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+    .line-reader{margin-top:16px;border:1px solid var(--border);border-radius:6px;background:#101010;overflow:hidden}
+    .line-reader-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 12px;background:var(--panel2);border-bottom:1px solid var(--border)}
+    .line-reader-content{padding:14px;max-height:520px;overflow-y:auto;line-height:1.75}
+    .commentable-line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:7px 0;border-bottom:1px solid #282828}
+    .commentable-line:last-child{border-bottom:0}
+    .commentable-line.has-comments .line-copy{border-left:3px solid var(--accent);padding-left:10px}
+    .line-copy{white-space:pre-wrap;overflow-wrap:anywhere}
+    .line-comment-trigger{min-width:80px;padding:5px 8px;font-size:10px;white-space:nowrap}
+    #editorView.write-mode{grid-template-columns:1fr}
+    #editorView.write-mode .line-reader,#editorView.write-mode #commentsPanel{display:none!important}
+    #editorView.comments-mode .writer-only,#editorView.comments-mode .chapter-organizer,#editorView.comments-mode .chapter-actions,#editorView.comments-mode #editorHeading,#editorView.comments-mode .general-notes{display:none!important}
+    #editorView.comments-mode{position:fixed;inset:0;z-index:10000;display:block!important;margin:0!important;padding:12px!important;background:#0a0a0a;overflow-y:auto;grid-template-columns:none}
+    #editorView.comments-mode > .card{width:100%;margin:0 0 12px;padding:12px}
+    #editorView.comments-mode .line-reader{margin-top:0;margin-bottom:310px}
+    #editorView.comments-mode .line-reader-content{max-height:none;overflow:visible;padding:12px}
+    #editorView.comments-mode #commentsPanel{position:fixed;left:12px;right:12px;bottom:0;z-index:5;max-height:300px;overflow-y:auto;margin:0;padding:12px;background:#1a1a1a;border:1px solid var(--accent);border-radius:8px 8px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+    .focus-overlay{position:fixed;inset:0;z-index:10000;background:#0a0a0a;padding:20px;display:flex;flex-direction:column}
+    .focus-overlay.hidden{display:none!important}
+    .focus-toolbar{max-width:1080px;width:100%;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;color:#bbb}
+    .focus-toolbar .row{gap:6px}
+    .focus-nav{max-width:1080px;width:100%;margin:0 auto 8px;display:flex;gap:6px;align-items:center;overflow-x:auto;padding-bottom:6px}
+    .focus-playlists{max-width:1080px;width:100%;margin:0 auto 8px;display:flex;gap:6px;align-items:center;overflow-x:auto;padding-bottom:6px}
+    .focus-playlists a{white-space:nowrap}
+    .focus-save-state{font-size:11px;color:#bbb;white-space:nowrap}
+    .focus-tab{background:#222;color:#ddd;border:1px solid #555;padding:6px 10px;border-radius:3px;cursor:pointer;white-space:nowrap;font-size:11px}
+    .focus-tab.active{background:#8B0000;border-color:#8B0000;color:#f5e9d5}
+    .focus-textarea{width:min(980px,100%);height:100%;margin:0 auto;flex:1;background:#0a0a0a;color:#f5e9d5;border:0;outline:0;box-shadow:none;border-radius:0;resize:none;font-family:Lora,serif;font-size:18px;line-height:1.9;padding:18px}
+    .inline-reply{margin:8px 0 0 16px;padding:8px 10px;border-left:2px solid #555;background:#181818;border-radius:3px}
+    .reply-state{margin:0 0 8px;color:#bbb;font-size:12px}
+    @media (max-width:640px){.topbar{padding:8px;gap:6px}.topbar .row{gap:5px}.topbar .btn,.topbar .tab{padding:7px 8px;font-size:11px}.chapter-nav-tools{align-items:stretch}.chapter-tab-name{width:100%!important}.word-count{margin-left:0}.commentable-line{grid-template-columns:1fr}.line-comment-trigger{justify-self:start}.focus-overlay{padding:10px}.focus-textarea{font-size:16px;padding:10px}.focus-toolbar{position:sticky;top:0;padding:4px 0;background:#0a0a0a;z-index:2}.focus-nav,.focus-playlists{padding-bottom:8px}.focus-tab{padding:8px 10px}.focus-textarea{line-height:1.75}.editor-mode-switch{position:sticky;top:0;background:#0a0a0a;padding:6px 0;z-index:2}.chapter-tab-name{min-width:0}.chapter-organizer{padding:8px}#editorView.comments-mode{padding:8px!important}#editorView.comments-mode #commentsPanel{left:8px;right:8px;max-height:38vh}#editorView.comments-mode .line-reader{margin-bottom:46vh}}
+
   </style>
 </head>
 <body>
@@ -111,6 +179,7 @@
       <div class="row right">
         <button class="btn secondary" id="copyBtn">Copy Text</button>
         <button class="btn secondary" id="distractionBtn">Focus</button>
+        <button class="btn secondary" id="editCommentsTopBtn">Edit</button>
       </div>
     </div>
 
@@ -337,37 +406,108 @@
         <div id="beatsList" class="cards" style="margin-top:16px;"></div>
       </div>
 
-      <div id="editorView" class="section hidden grid2">
+      <div id="editorView" class="section hidden grid2 write-mode">
         <div class="card">
-          <div class="row" style="justify-content:space-between;margin-bottom:12px;">
+          <div class="row writer-only" style="justify-content:space-between;margin-bottom:12px;">
             <h2 id="editorHeading">Chapter</h2>
-            <button class="btn secondary" id="saveChapterBtn">Save Chapter</button>
+            <div class="chapter-actions">
+              <span class="small" id="chapterSaveState" aria-live="polite">Saved</span>
+              <button class="btn secondary" id="saveChapterBtn">Save Chapter</button>
+              <button class="btn secondary" id="deleteChapterBtn">Delete Chapter</button>
+            </div>
           </div>
-          <div class="chapter-nav" id="chapterNav"></div>
-          <input id="chapterTitle" type="text" placeholder="Chapter title" style="margin-bottom:10px;">
-          <input id="chapterMeta" type="text" placeholder="POV / Act / Notes" style="margin-bottom:10px;">
-          <textarea id="chapterText" placeholder="Write your chapter here..."></textarea>
-          
-          <div class="row" style="margin-top:12px;">
-            <input id="spotifyUrl" type="url" placeholder="Spotify URL (e.g. https://open.spotify.com/track/...)">
-            <input id="youtubeUrl" type="url" placeholder="YouTube URL (e.g. https://www.youtube.com/watch?v=...)">
+          <div class="editor-mode-switch">
+            <button class="mode-btn active" id="writeModeBtn">Back to Write</button>
+            <button class="mode-btn" id="commentsModeBtn">Edit Comments</button>
+            <span class="word-count" id="wordCount">0 words</span>
+          </div>
+          <div class="chapter-organizer writer-only">
+            <div class="chapter-nav-tools">
+              <span class="small">Press and drag a named tab to rearrange your chapters.</span>
+            </div>
+            <input id="chapterTabName" class="chapter-tab-name" type="text" maxlength="40" placeholder="Custom tab name (for example: Chapter 1 — Morning)">
+            <div class="chapter-nav" id="chapterNav" aria-label="Chapter navigation. Drag chapter buttons to reorder them."></div>
+          </div>
+          <div class="writer-only">
+            <div id="chapterHeader" class="chapter-header"></div>
+            <div class="chapter-header-tools">
+              <input id="chapterHeaderFile" type="file" accept="image/*" aria-label="Choose a chapter header image">
+              <button class="btn" id="saveChapterHeaderBtn">Set Header Image</button>
+              <button class="btn secondary" id="removeChapterHeaderBtn">Remove Header</button>
+            </div>
+            <input id="chapterTitle" type="text" placeholder="Chapter title" style="margin-bottom:10px;">
+            <input id="chapterMeta" type="text" placeholder="POV / Act / Notes" style="margin-bottom:10px;">
+            <textarea id="chapterText" placeholder="Write your chapter here..."></textarea>
           </div>
 
-          <div id="spotifyEmbedContainer" class="media-embed hidden"></div>
-          <div id="youtubeEmbedContainer" class="media-embed hidden"></div>
+          <div class="line-reader" id="inlineReaderBlock">
+            <div class="line-reader-toolbar">
+              <strong>Line-by-Line Comments</strong>
+              <span class="small">Every sentence has its own comment control.</span>
+            </div>
+            <div id="inlineReaderContent" class="line-reader-content"></div>
+          </div>
+
+          <div class="writer-only">
+            <div class="chapter-photo-tools">
+              <input id="chapterPhotoFile" type="file" accept="image/*" aria-label="Choose a chapter photo">
+              <input id="chapterPhotoCaption" type="text" placeholder="Photo caption or note">
+              <button class="btn" id="addChapterPhotoBtn">Add Photo</button>
+            </div>
+            <div id="chapterPhotoGallery" class="chapter-photo-gallery"></div>
+            <div class="row" style="margin-top:12px;">
+              <input id="spotifyUrl" type="url" placeholder="Spotify URL (e.g. https://open.spotify.com/track/...)">
+              <input id="youtubeUrl" type="url" placeholder="YouTube URL (e.g. https://www.youtube.com/watch?v=...)">
+            </div>
+            <div class="chapter-photo-tools" style="margin-top:10px;">
+              <input id="playlistName" type="text" placeholder="Playlist link name">
+              <input id="playlistUrl" type="url" placeholder="Playlist URL (Spotify, YouTube, etc.)">
+              <button class="btn" id="addPlaylistBtn">Add Playlist Link</button>
+            </div>
+            <div id="playlistLinks" class="row" style="margin-top:8px;"></div>
+            <div id="spotifyEmbedContainer" class="media-embed hidden"></div>
+            <div id="youtubeEmbedContainer" class="media-embed hidden"></div>
+          </div>
         </div>
 
         <div class="card" id="commentsPanel">
-          <h3>Chapter Comments & Notes</h3>
-          <input id="commentAuthor" type="text" placeholder="Your name" style="margin-bottom:8px;">
-          <textarea id="generalCommentText" placeholder="Add a comment or note for this chapter..." style="min-height:80px;margin-bottom:8px;"></textarea>
-          <button class="btn" id="addGeneralCommentBtn" style="width:100%;margin-bottom:14px;">Post Comment</button>
-          <div style="border-top:1px solid var(--border);padding-top:12px;">
-            <div id="generalCommentsContainer" style="max-height:420px;overflow-y:auto;"></div>
+          <h3>Inline Comments</h3>
+          <div id="inlineCommentContext" class="inline-comment-context">Choose a line comment control to open its discussion.</div>
+          <div id="inlineReplyState" class="reply-state hidden"></div>
+          <input id="inlineCommentAuthor" type="text" placeholder="Your name" style="margin-bottom:8px;">
+          <textarea id="inlineCommentText" placeholder="Write a comment about the selected line..." style="min-height:80px;margin-bottom:8px;"></textarea>
+          <div class="row" style="margin-bottom:12px;">
+            <button class="btn" id="addInlineCommentBtn" style="flex:1;">Post Inline Comment</button>
+            <button class="btn secondary hidden" id="cancelInlineReplyBtn">Cancel Reply</button>
+          </div>
+          <div id="inlineCommentsContainer" style="max-height:290px;overflow-y:auto;"></div>
+          <div class="general-notes" style="border-top:1px solid var(--border);padding-top:14px;margin-top:14px;">
+            <h3 style="margin:0 0 8px;">General Chapter Notes</h3>
+            <input id="commentAuthor" type="text" placeholder="Your name" style="margin-bottom:8px;">
+            <textarea id="generalCommentText" placeholder="Add a note about this whole chapter..." style="min-height:80px;margin-bottom:8px;"></textarea>
+            <button class="btn secondary" id="addGeneralCommentBtn" style="width:100%;margin-bottom:12px;">Post General Note</button>
+            <div id="generalCommentsContainer" style="max-height:260px;overflow-y:auto;"></div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <div id="focusOverlay" class="focus-overlay hidden" aria-label="Focus writing mode">
+    <div class="focus-toolbar">
+      <div class="row">
+        <button class="btn secondary" id="focusBackBtn">Back</button>
+        <span id="focusHeading">Focus Writing</span>
+      </div>
+      <div class="row">
+        <span id="focusSaveState" class="focus-save-state">Autosave is on</span>
+        <span id="focusWordCount" class="word-count">0 words</span>
+        <button class="btn secondary" id="exitFocusBtn">Exit Focus</button>
+      </div>
+    </div>
+    <div id="focusChapterNav" class="focus-nav" aria-label="Focus chapter navigation. Press and drag tabs to reorder."></div>
+    <div id="focusPlaylistLinks" class="focus-playlists" aria-label="Chapter playlist links"></div>
+    <textarea id="focusChapterText" class="focus-textarea" placeholder="Write your chapter here..."></textarea>
   </div>
 
   <script>
@@ -407,8 +547,23 @@
     activeChapterId: null,
     carouselIndex: 0,
     draggedPin: null,
+    draggedChapterId: null,
+    activeInlineCommentKey: null,
+    activeInlineCommentIndex: null,
+    activeInlineCommentAnchor: '',
+    replyingToCommentId: null,
+    editorMode: 'write',
+    tabNameSaveTimer: null,
+    focusModeActive: false,
     data: structuredClone(DEFAULTS),
-    db: null
+    db: null,
+    chapterSaveTimer: null,
+    chapterDraftRevision: 0,
+    chapterSavedRevision: 0,
+    chapterWriteQueue: Promise.resolve(),
+    dirtyChapterId: null,
+    cloudListener: null,
+    lastCloudSignature: ''
   };
 
   function escapeHtml(str){
@@ -417,51 +572,206 @@
 
   function setStatus(msg){ $('#statusBar').textContent = msg; }
 
+  function setChapterSaveState(msg){
+    const el = $('#chapterSaveState');
+    const focusEl = $('#focusSaveState');
+    if(el) el.textContent = msg;
+    if(focusEl) focusEl.textContent = msg === 'Saving…' ? 'Autosaving…' : (msg.includes('Saved') ? 'Autosaved' : msg);
+  }
+
+  function orderChapters(chapters){
+    return [...chapters].sort((a, b) => {
+      const aOrder = Number.isFinite(Number(a.order)) ? Number(a.order) : Number(a.createdAt || 0);
+      const bOrder = Number.isFinite(Number(b.order)) ? Number(b.order) : Number(b.createdAt || 0);
+      return aOrder - bOrder;
+    });
+  }
+
+  function chapterMapFromLegacy(chapters){
+    return (Array.isArray(chapters) ? chapters : []).reduce((map, chapter, index) => {
+      if(!chapter || !chapter.id) return map;
+      map[chapter.id] = {
+        ...chapter,
+        photos: Array.isArray(chapter.photos) ? chapter.photos : [],
+        inlineComments: Array.isArray(chapter.inlineComments) ? chapter.inlineComments : [],
+        playlists: Array.isArray(chapter.playlists) ? chapter.playlists : [],
+        tabName: chapter.tabName || '',
+        headerImageUrl: chapter.headerImageUrl || '',
+        order: Number.isFinite(Number(chapter.order)) ? Number(chapter.order) : index + 1,
+        createdAt: chapter.createdAt || Date.now() + index,
+        updatedAt: chapter.updatedAt || chapter.createdAt || Date.now() + index
+      };
+      return map;
+    }, {});
+  }
+
+  function normalizeData(raw){
+    const data = { ...structuredClone(DEFAULTS), ...(raw && typeof raw === 'object' ? raw : {}) };
+    data.pins = Array.isArray(data.pins) ? data.pins : [];
+    data.beats = Array.isArray(data.beats) ? data.beats : [];
+    data.generalComments = data.generalComments && typeof data.generalComments === 'object' ? data.generalComments : {};
+    const storedMap = data.chaptersById && typeof data.chaptersById === 'object' && !Array.isArray(data.chaptersById) ? data.chaptersById : {};
+    const rawChapters = Object.keys(storedMap).length ? Object.values(storedMap) : data.chapters;
+    data.chaptersById = chapterMapFromLegacy(rawChapters);
+    data.chapters = orderChapters(Object.values(data.chaptersById));
+    return data;
+  }
+
+  function syncChapterMap(){
+    state.data.chapters = orderChapters(state.data.chapters || []);
+    state.data.chaptersById = chapterMapFromLegacy(state.data.chapters);
+  }
+
   function persistLocal(){
+    syncChapterMap();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
   }
 
-  async function persist(){
+  async function persist(keys = ['coverUrl', 'splashTitle', 'splashSubtitle', 'pins', 'outline', 'beats', 'generalComments']){
     persistLocal();
     try{
       if(state.db) {
-        await state.db.ref('vault').set(state.data);
-        setStatus('Saved to Cloud.');
+        const patch = {};
+        keys.forEach(key => { patch[key] = state.data[key]; });
+        await state.db.ref('vault').update(patch);
+        setStatus('Saved to cloud.');
       }
     }catch(e){
-      console.error("Firebase sync error:", e);
-      setStatus('Saved locally. Cloud sync failed.');
+      console.error('Firebase sync error:', e);
+      setStatus('Saved on this device. Cloud sync failed.');
     }
+  }
+
+  async function persistChapter(chapter, { quiet = false, revision = state.chapterDraftRevision } = {}){
+    if(!chapter || !chapter.id) return;
+    chapter.photos = Array.isArray(chapter.photos) ? chapter.photos : [];
+    chapter.inlineComments = Array.isArray(chapter.inlineComments) ? chapter.inlineComments : [];
+    chapter.playlists = Array.isArray(chapter.playlists) ? chapter.playlists : [];
+    chapter.tabName = chapter.tabName || '';
+    chapter.headerImageUrl = chapter.headerImageUrl || '';
+    chapter.updatedAt = Date.now();
+    if(!chapter.createdAt) chapter.createdAt = chapter.updatedAt;
+    if(!Number.isFinite(Number(chapter.order))) chapter.order = Math.max(0, ...state.data.chapters.map(item => Number(item.order) || 0)) + 1;
+    state.data.chaptersById = state.data.chaptersById || {};
+    state.data.chaptersById[chapter.id] = chapter;
+    const existingIndex = state.data.chapters.findIndex(item => String(item.id) === String(chapter.id));
+    if(existingIndex === -1) state.data.chapters.push(chapter);
+    else state.data.chapters[existingIndex] = chapter;
+    persistLocal();
+
+    const writeChapter = async () => {
+      if(state.db) await state.db.ref(`vault/chaptersById/${chapter.id}`).set(chapter);
+    };
+    state.chapterWriteQueue = state.chapterWriteQueue.catch(() => {}).then(writeChapter);
+    try{
+      await state.chapterWriteQueue;
+      state.chapterSavedRevision = Math.max(state.chapterSavedRevision, revision);
+      if(state.chapterSavedRevision >= state.chapterDraftRevision){
+        state.dirtyChapterId = null;
+        setChapterSaveState(state.db ? 'Saved to cloud' : 'Saved on this device');
+      } else {
+        setChapterSaveState('Saving…');
+      }
+      if(!quiet) setStatus(state.db ? 'Chapter saved to cloud.' : 'Chapter saved on this device.');
+    }catch(e){
+      console.error('Chapter cloud sync error:', e);
+      setChapterSaveState('Saved on this device — cloud sync failed');
+      if(!quiet) setStatus('Chapter saved on this device. Cloud sync failed.');
+    }
+  }
+
+  function applyEditorValuesToChapter(chapter){
+    chapter.title = $('#chapterTitle').value.trim() || 'Untitled';
+    chapter.meta = $('#chapterMeta').value.trim();
+    chapter.content = $('#chapterText').value;
+    chapter.spotifyUrl = $('#spotifyUrl').value;
+    chapter.youtubeUrl = $('#youtubeUrl').value;
+    chapter.photos = Array.isArray(chapter.photos) ? chapter.photos : [];
+    chapter.inlineComments = Array.isArray(chapter.inlineComments) ? chapter.inlineComments : [];
+    chapter.playlists = Array.isArray(chapter.playlists) ? chapter.playlists : [];
+    chapter.tabName = $('#chapterTabName').value.trim();
+    chapter.headerImageUrl = chapter.headerImageUrl || '';
+    return chapter;
+  }
+
+  async function flushChapterAutosave({ quiet = true } = {}){
+    if(!state.dirtyChapterId) return;
+    clearTimeout(state.chapterSaveTimer);
+    await saveChapterData({ quiet, revision: state.chapterDraftRevision });
+  }
+
+  async function deleteChapterFromCloud(chapterId){
+    state.data.chapters = state.data.chapters.filter(chapter => String(chapter.id) !== String(chapterId));
+    if(state.data.chaptersById) delete state.data.chaptersById[chapterId];
+    persistLocal();
+    try{
+      if(state.db) await state.db.ref(`vault/chaptersById/${chapterId}`).remove();
+      setStatus('Chapter deleted.');
+    }catch(e){
+      console.error('Chapter deletion sync error:', e);
+      setStatus('Chapter deleted on this device. Cloud sync failed.');
+    }
+  }
+
+  async function migrateLegacyChapters(remote){
+    const existingMap = remote?.chaptersById;
+    const legacyChapters = Array.isArray(remote?.chapters) ? remote.chapters : [];
+    if(!state.db || Object.keys(existingMap || {}).length || !legacyChapters.length) return;
+    const map = chapterMapFromLegacy(legacyChapters);
+    if(Object.keys(map).length) await state.db.ref('vault/chaptersById').set(map);
+  }
+
+  function startCloudChapterSync(){
+    if(!state.db) return;
+    state.cloudListener = state.db.ref('vault/chaptersById').on('value', snap => {
+      const map = snap.val() || {};
+      const localDraft = state.dirtyChapterId ? state.data.chapters.find(chapter => String(chapter.id) === String(state.dirtyChapterId)) : null;
+      state.data.chaptersById = map;
+      state.data.chapters = orderChapters(Object.values(map));
+      if(localDraft){
+        state.data.chaptersById[localDraft.id] = localDraft;
+        const index = state.data.chapters.findIndex(chapter => String(chapter.id) === String(localDraft.id));
+        if(index === -1) state.data.chapters.push(localDraft);
+        else state.data.chapters[index] = localDraft;
+        state.data.chapters = orderChapters(state.data.chapters);
+      }
+      if(state.activeChapterId && !state.data.chapters.some(chapter => String(chapter.id) === String(state.activeChapterId))){
+        state.activeChapterId = state.data.chapters[0]?.id || null;
+      }
+      persistLocal();
+      if(!state.dirtyChapterId) render();
+      else {
+        renderChapterNav();
+        renderChapterPhotos();
+      }
+    });
   }
 
   async function load(){
     try{
       const saved = localStorage.getItem(STORAGE_KEY);
-      if(saved) state.data = { ...structuredClone(DEFAULTS), ...JSON.parse(saved) };
+      if(saved) state.data = normalizeData(JSON.parse(saved));
     }catch(e){}
 
     try{
-      if(!firebase.apps.length){
-        firebase.initializeApp(firebaseConfig);
-      }
+      if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       state.db = firebase.database();
-      
       const snap = await state.db.ref('vault').once('value');
       if(snap.exists()){
         const remote = snap.val();
-        state.data = { ...structuredClone(DEFAULTS), ...remote };
+        state.data = normalizeData(remote);
+        await migrateLegacyChapters(remote);
         persistLocal();
         setStatus('Synced with cloud.');
       }
+      startCloudChapterSync();
     }catch(e){
-      console.error("Firebase load error:", e);
+      console.error('Firebase load error:', e);
       setStatus('Using local storage.');
     }
 
     $('#splashImg').src = state.data.coverUrl || '';
-    if(state.data.chapters.length && !state.activeChapterId){
-      state.activeChapterId = state.data.chapters[0].id;
-    }
+    if(state.data.chapters.length && !state.activeChapterId) state.activeChapterId = state.data.chapters[0].id;
     render();
   }
 
@@ -611,14 +921,583 @@
     }
   }
 
+  function chapterTabLabel(chapter, index){
+    return (chapter.tabName || chapter.title || `Chapter ${index + 1}`).trim() || `Chapter ${index + 1}`;
+  }
+
+  function bindTouchChapterReorder(tab, selector, idAttribute){
+    const clearDrag = () => {
+      state.draggedChapterId = null;
+      tab.classList.remove('dragging');
+    };
+    tab.addEventListener('touchstart', event => {
+      state.draggedChapterId = tab.dataset[idAttribute];
+      tab.classList.add('dragging');
+    }, { passive: true });
+    tab.addEventListener('touchend', async event => {
+      const touch = event.changedTouches?.[0];
+      const target = touch ? document.elementFromPoint(touch.clientX, touch.clientY)?.closest(selector) : null;
+      const targetId = target?.dataset[idAttribute];
+      const draggedId = state.draggedChapterId;
+      clearDrag();
+      if(targetId && draggedId && String(targetId) !== String(draggedId)) await reorderChapters(draggedId, targetId);
+    });
+    tab.addEventListener('touchcancel', clearDrag, { passive: true });
+  }
+
+  function bindChapterTabDrag(tab, selector, idAttribute){
+    tab.addEventListener('dragstart', event => {
+      state.draggedChapterId = tab.dataset[idAttribute];
+      tab.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
+    });
+    tab.addEventListener('dragend', () => {
+      state.draggedChapterId = null;
+      tab.classList.remove('dragging');
+      $$('.chapter-dragover').forEach(item => item.classList.remove('chapter-dragover'));
+    });
+    tab.addEventListener('dragover', event => {
+      event.preventDefault();
+      if(state.draggedChapterId && state.draggedChapterId !== tab.dataset[idAttribute]) tab.classList.add('chapter-dragover');
+    });
+    tab.addEventListener('dragleave', () => tab.classList.remove('chapter-dragover'));
+    tab.addEventListener('drop', async event => {
+      event.preventDefault();
+      tab.classList.remove('chapter-dragover');
+      await reorderChapters(state.draggedChapterId, tab.dataset[idAttribute]);
+    });
+    bindTouchChapterReorder(tab, selector, idAttribute);
+  }
+
   function renderChapterNav(){
-    const navHtml = state.data.chapters.map((ch, idx) => `
-      <button class="ch-btn ${String(ch.id) === String(state.activeChapterId) ? 'active' : ''}" data-open-chapter="${ch.id}">Ch ${idx + 1}</button>
+    const navHtml = state.data.chapters.map((chapter, index) => `
+      <button class="ch-btn ${String(chapter.id) === String(state.activeChapterId) ? 'active' : ''}" draggable="true" data-open-chapter="${chapter.id}" data-chapter-id="${chapter.id}" title="Press and drag this named tab to reorder chapters">${escapeHtml(chapterTabLabel(chapter, index))}</button>
     `).join('');
     const navEl = $('#chapterNav');
-    if(navEl) {
-      navEl.innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
+    if(!navEl) return;
+    navEl.innerHTML = navHtml + `<button class="add-chapter-btn" id="addNewChapterBtn">+ Add Chapter</button>`;
+    const active = getActiveChapter();
+    const tabNameInput = $('#chapterTabName');
+    if(tabNameInput && document.activeElement !== tabNameInput) tabNameInput.value = active?.tabName || '';
+    $$('#chapterNav [data-chapter-id][draggable="true"]').forEach(tab => bindChapterTabDrag(tab, '[data-chapter-id]', 'chapterId'));
+  }
+
+  function getActiveChapter(){
+    return state.data.chapters.find(chapter => String(chapter.id) === String(state.activeChapterId)) || null;
+  }
+
+  async function moveActiveChapter(direction){
+    const currentIndex = state.data.chapters.findIndex(chapter => String(chapter.id) === String(state.activeChapterId));
+    const targetIndex = currentIndex + direction;
+    if(currentIndex < 0 || targetIndex < 0 || targetIndex >= state.data.chapters.length){
+      setStatus(direction < 0 ? 'This chapter is already first.' : 'This chapter is already last.');
+      return;
     }
+    await reorderChapters(state.activeChapterId, state.data.chapters[targetIndex].id);
+  }
+
+  function scheduleTabNameSave(){
+    const chapter = getActiveChapter();
+    if(!chapter) return;
+    chapter.tabName = $('#chapterTabName').value.trim();
+    state.chapterDraftRevision += 1;
+    const revision = state.chapterDraftRevision;
+    setChapterSaveState('Saving…');
+    clearTimeout(state.tabNameSaveTimer);
+    state.tabNameSaveTimer = setTimeout(async () => {
+      await persistChapter(chapter, { quiet: true, revision });
+      renderChapterNav();
+    }, 500);
+  }
+
+  async function reorderChapters(draggedId, targetId){
+    if(!draggedId || !targetId || String(draggedId) === String(targetId)) return;
+    await flushChapterAutosave();
+    const from = state.data.chapters.findIndex(chapter => String(chapter.id) === String(draggedId));
+    const to = state.data.chapters.findIndex(chapter => String(chapter.id) === String(targetId));
+    if(from < 0 || to < 0) return;
+    const [movedChapter] = state.data.chapters.splice(from, 1);
+    state.data.chapters.splice(to, 0, movedChapter);
+    const patch = {};
+    const stamp = Date.now();
+    state.data.chapters.forEach((chapter, index) => {
+      chapter.order = index + 1;
+      chapter.updatedAt = stamp;
+      patch[`chaptersById/${chapter.id}/order`] = chapter.order;
+      patch[`chaptersById/${chapter.id}/updatedAt`] = stamp;
+    });
+    persistLocal();
+    const writeOrder = async () => {
+      if(state.db) await state.db.ref('vault').update(patch);
+    };
+    state.chapterWriteQueue = state.chapterWriteQueue.catch(() => {}).then(writeOrder);
+    try{
+      await state.chapterWriteQueue;
+      setStatus('Chapter order saved to cloud.');
+    }catch(error){
+      console.error('Chapter order sync error:', error);
+      setStatus('Chapter order saved on this device. Cloud sync failed.');
+    }
+    renderChapterNav();
+    if(state.focusModeActive){
+      renderFocusChapterNav();
+      renderFocusPlaylists();
+    }
+  }
+
+  function renderChapterHeader(){
+    const target = $('#chapterHeader');
+    if(!target) return;
+    const chapter = getActiveChapter();
+    if(chapter?.headerImageUrl){
+      target.innerHTML = `<img src="${escapeHtml(chapter.headerImageUrl)}" alt="${escapeHtml(chapter.title || 'Chapter')} header image">`;
+    } else {
+      target.innerHTML = '<div class="chapter-header-placeholder">Add an optional header image for this chapter.</div>';
+    }
+  }
+
+  async function saveChapterHeaderImage(){
+    const file = $('#chapterHeaderFile').files[0];
+    if(!file){
+      setStatus('Choose a header image first.');
+      return;
+    }
+    await flushChapterAutosave();
+    const chapter = ensureActiveChapterFromEditor();
+    setStatus('Uploading chapter header image...');
+    const url = await uploadImage(file);
+    if(!url){
+      setStatus('Header image upload failed. Please try again.');
+      return;
+    }
+    chapter.headerImageUrl = url;
+    $('#chapterHeaderFile').value = '';
+    await persistChapter(chapter, { revision: state.chapterDraftRevision });
+    renderChapterHeader();
+  }
+
+  async function removeChapterHeaderImage(){
+    await flushChapterAutosave();
+    const chapter = getActiveChapter();
+    if(!chapter?.headerImageUrl){
+      setStatus('This chapter does not have a header image.');
+      return;
+    }
+    chapter.headerImageUrl = '';
+    await persistChapter(chapter, { revision: state.chapterDraftRevision });
+    renderChapterHeader();
+  }
+
+  function hashText(value){
+    let hash = 2166136261;
+    for(let index = 0; index < value.length; index += 1){
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  function chapterLines(content){
+    const source = String(content || '').replace(/\r/g, '');
+    const rawLines = source.split('\n').flatMap(line => {
+      const sentences = line.match(/[^.!?]+[.!?]+(?:[”’"')\]]*)|[^.!?]+$/g) || [line];
+      return sentences.map(sentence => sentence.trim()).filter(Boolean);
+    });
+    return rawLines;
+  }
+
+  function lineKey(index, line){
+    return `l_${index}_${hashText(line)}`;
+  }
+
+  function commentsForLine(chapter, key, index){
+    return (chapter.inlineComments || []).filter(comment => comment.lineKey === key || comment.paragraphKey === key || (Number(comment.lineIndex) === index && comment.lineIndex !== undefined) || (Number(comment.paragraphIndex) === index && !comment.lineKey));
+  }
+
+  function renderInlineReader(){
+    const target = $('#inlineReaderContent');
+    if(!target) return;
+    const chapter = getActiveChapter();
+    const lines = chapterLines(chapter?.content);
+    if(!chapter || !lines.length){
+      target.innerHTML = '<div class="small">Write text first. Each written sentence will appear here with its own comment control.</div>';
+      return;
+    }
+    target.innerHTML = lines.map((line, index) => {
+      const key = lineKey(index, line);
+      const comments = commentsForLine(chapter, key, index);
+      return `
+        <div class="commentable-line ${comments.length ? 'has-comments' : ''}">
+          <div class="line-copy">${escapeHtml(line)}</div>
+          <button class="btn secondary line-comment-trigger" data-inline-comment-open="${key}" data-inline-comment-index="${index}" title="Comment on this line">${comments.length ? `Comments ${comments.length}` : '+ Comment'}</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderInlineComments(){
+    const context = $('#inlineCommentContext');
+    const container = $('#inlineCommentsContainer');
+    const replyState = $('#inlineReplyState');
+    const postButton = $('#addInlineCommentBtn');
+    const cancelReplyButton = $('#cancelInlineReplyBtn');
+    if(!context || !container) return;
+    const chapter = getActiveChapter();
+    if(!chapter || state.activeInlineCommentKey == null){
+      context.textContent = 'Choose a line comment control to open its discussion.';
+      container.innerHTML = '<div class="small">No line selected.</div>';
+      if(replyState) replyState.classList.add('hidden');
+      if(cancelReplyButton) cancelReplyButton.classList.add('hidden');
+      return;
+    }
+    const allThreadComments = commentsForLine(chapter, state.activeInlineCommentKey, state.activeInlineCommentIndex);
+    const commentsByParent = allThreadComments.reduce((map, comment) => {
+      const key = comment.parentId || 'root';
+      (map[key] ||= []).push(comment);
+      return map;
+    }, {});
+    const renderComment = (comment, depth = 0) => {
+      const children = commentsByParent[comment.id] || [];
+      const className = depth ? 'inline-reply' : 'inline-comment';
+      return `
+        <div class="${className}">
+          <div class="general-comment-author">${escapeHtml(comment.author || 'Anonymous')}</div>
+          <div class="general-comment-text">${escapeHtml(comment.text)}</div>
+          <div class="row" style="justify-content:flex-end;margin-top:6px;">
+            <button class="btn secondary" style="padding:4px 8px;font-size:11px;" data-inline-comment-reply="${escapeHtml(comment.id)}">Reply</button>
+            <button class="btn secondary" style="padding:4px 8px;font-size:11px;" data-inline-comment-del="${escapeHtml(comment.id)}">Delete</button>
+          </div>
+          ${children.map(child => renderComment(child, depth + 1)).join('')}
+        </div>
+      `;
+    };
+    context.textContent = `Discussing: “${state.activeInlineCommentAnchor}”`;
+    container.innerHTML = (commentsByParent.root || []).map(comment => renderComment(comment)).join('') || '<div class="small">No comments on this line yet.</div>';
+    const replyingTo = state.replyingToCommentId ? allThreadComments.find(comment => String(comment.id) === String(state.replyingToCommentId)) : null;
+    if(replyingTo){
+      replyState.textContent = `Replying to ${replyingTo.author || 'Anonymous'}.`;
+      replyState.classList.remove('hidden');
+      postButton.textContent = 'Post Reply';
+      cancelReplyButton.classList.remove('hidden');
+    } else {
+      if(replyState) replyState.classList.add('hidden');
+      postButton.textContent = 'Post Inline Comment';
+      if(cancelReplyButton) cancelReplyButton.classList.add('hidden');
+    }
+  }
+
+  function beginInlineReply(commentId){
+    state.replyingToCommentId = commentId;
+    $('#inlineCommentText').focus();
+    renderInlineComments();
+  }
+
+  function cancelInlineReply(){
+    state.replyingToCommentId = null;
+    renderInlineComments();
+  }
+
+  function countWords(text){
+    const matches = String(text || '').trim().match(/\S+/g);
+    return matches ? matches.length : 0;
+  }
+
+  function updateWordCount(text = $('#chapterText').value){
+    const label = `${countWords(text)} words`;
+    const editorCount = $('#wordCount');
+    const focusCount = $('#focusWordCount');
+    if(editorCount) editorCount.textContent = label;
+    if(focusCount) focusCount.textContent = label;
+  }
+
+  async function showCommentsMode(){
+    if(state.view !== 'editor') setView('editor');
+    await flushChapterAutosave({ quiet: true });
+    setEditorMode('comments');
+  }
+
+  function setEditorMode(mode){
+    state.editorMode = mode === 'comments' ? 'comments' : 'write';
+    const editor = $('#editorView');
+    editor.classList.toggle('write-mode', state.editorMode === 'write');
+    editor.classList.toggle('comments-mode', state.editorMode === 'comments');
+    $('#writeModeBtn').classList.toggle('active', state.editorMode === 'write');
+    $('#commentsModeBtn').classList.toggle('active', state.editorMode === 'comments');
+    if(state.editorMode === 'comments'){
+      renderInlineReader();
+      renderInlineComments();
+    }
+  }
+
+  function renderFocusChapterNav(){
+    const nav = $('#focusChapterNav');
+    if(!nav) return;
+    nav.innerHTML = state.data.chapters.map((chapter, index) => `<button class="focus-tab ${String(chapter.id) === String(state.activeChapterId) ? 'active' : ''}" draggable="true" data-focus-chapter-id="${chapter.id}" title="Press and drag tabs to reorder chapters">${escapeHtml(chapterTabLabel(chapter, index))}</button>`).join('');
+    $$('#focusChapterNav [data-focus-chapter-id]').forEach(tab => {
+      tab.addEventListener('click', () => openFocusChapter(tab.dataset.focusChapterId));
+      bindChapterTabDrag(tab, '[data-focus-chapter-id]', 'focusChapterId');
+    });
+  }
+
+  function renderFocusPlaylists(){
+    const container = $('#focusPlaylistLinks');
+    if(!container) return;
+    const chapter = getActiveChapter();
+    const links = [];
+    if(chapter?.spotifyUrl && isSafePlaylistUrl(chapter.spotifyUrl)) links.push({ name: 'Spotify', url: chapter.spotifyUrl });
+    if(chapter?.youtubeUrl && isSafePlaylistUrl(chapter.youtubeUrl)) links.push({ name: 'YouTube', url: chapter.youtubeUrl });
+    (chapter?.playlists || []).forEach(item => {
+      if(item?.url && isSafePlaylistUrl(item.url)) links.push({ name: item.name || 'Playlist', url: item.url });
+    });
+    container.innerHTML = links.length ? links.map(item => `<a class="btn secondary" style="padding:6px 10px;font-size:11px;" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.name)}</a>`).join('') : '<span class="small">No playlist links for this chapter.</span>';
+  }
+
+  async function openFocusChapter(chapterId){
+    await flushChapterAutosave({ quiet: true });
+    await openChapter(chapterId, { skipDraftSave: true });
+    const chapter = getActiveChapter();
+    $('#focusHeading').textContent = chapter?.title || 'Focus Writing';
+    $('#focusChapterText').value = chapter?.content || '';
+    updateWordCount(chapter?.content || '');
+    renderFocusChapterNav();
+    renderFocusPlaylists();
+    $('#focusChapterText').focus();
+  }
+
+  async function enterFocusMode(){
+    await flushChapterAutosave({ quiet: true });
+    const chapter = ensureActiveChapterFromEditor();
+    state.focusModeActive = true;
+    $('#focusHeading').textContent = chapter.title || 'Focus Writing';
+    $('#focusChapterText').value = chapter.content || '';
+    $('#focusOverlay').classList.remove('hidden');
+    renderFocusChapterNav();
+    renderFocusPlaylists();
+    setChapterSaveState('Autosave is on');
+    updateWordCount(chapter.content || '');
+    $('#focusChapterText').focus();
+  }
+
+  async function exitFocusMode(){
+    if(!state.focusModeActive) return;
+    const focusText = $('#focusChapterText').value;
+    $('#chapterText').value = focusText;
+    state.focusModeActive = false;
+    $('#focusOverlay').classList.add('hidden');
+    scheduleChapterAutosave();
+    await flushChapterAutosave({ quiet: true });
+  }
+
+  function openInlineCommentThread(key, index){
+    const chapter = getActiveChapter();
+    if(!chapter) return;
+    const lines = chapterLines(chapter.content);
+    state.replyingToCommentId = null;
+    state.activeInlineCommentKey = key;
+    state.activeInlineCommentIndex = Number(index);
+    state.activeInlineCommentAnchor = (lines[index] || '').slice(0, 180);
+    renderInlineComments();
+  }
+
+  async function addInlineComment(){
+    await flushChapterAutosave();
+    const chapter = getActiveChapter();
+    const text = $('#inlineCommentText').value.trim();
+    if(!chapter || state.activeInlineCommentKey == null){
+      setStatus('Choose a paragraph first.');
+      return;
+    }
+    if(!text){
+      setStatus('Write a comment before posting.');
+      return;
+    }
+    if(text.length > 1000){
+      setStatus('Inline comments are limited to 1,000 characters.');
+      return;
+    }
+    chapter.inlineComments = Array.isArray(chapter.inlineComments) ? chapter.inlineComments : [];
+    chapter.inlineComments.unshift({
+      id: 'comment_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now(),
+      parentId: state.replyingToCommentId || null,
+      lineKey: state.activeInlineCommentKey,
+      lineIndex: state.activeInlineCommentIndex,
+      anchor: state.activeInlineCommentAnchor,
+      author: $('#inlineCommentAuthor').value.trim() || 'Anonymous',
+      text,
+      createdAt: Date.now()
+    });
+    state.replyingToCommentId = null;
+    $('#inlineCommentText').value = '';
+    await persistChapter(chapter, { revision: state.chapterDraftRevision });
+    renderInlineReader();
+    renderInlineComments();
+    setStatus('Inline comment posted.');
+  }
+
+  async function removeInlineComment(commentId){
+    const chapter = getActiveChapter();
+    if(!chapter) return;
+    const removedIds = new Set([String(commentId)]);
+    let foundChild = true;
+    while(foundChild){
+      foundChild = false;
+      (chapter.inlineComments || []).forEach(comment => {
+        if(comment.parentId && removedIds.has(String(comment.parentId)) && !removedIds.has(String(comment.id))){
+          removedIds.add(String(comment.id));
+          foundChild = true;
+        }
+      });
+    }
+    chapter.inlineComments = (chapter.inlineComments || []).filter(comment => !removedIds.has(String(comment.id)));
+    if(removedIds.has(String(state.replyingToCommentId))) state.replyingToCommentId = null;
+    await persistChapter(chapter, { revision: state.chapterDraftRevision });
+    renderInlineReader();
+    renderInlineComments();
+  }
+
+  function isSafePlaylistUrl(url){
+    try{
+      const parsed = new URL(url);
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    }catch(error){
+      return false;
+    }
+  }
+
+  function renderPlaylists(){
+    const container = $('#playlistLinks');
+    if(!container) return;
+    const chapter = getActiveChapter();
+    const playlists = Array.isArray(chapter?.playlists) ? chapter.playlists : [];
+    container.innerHTML = playlists.map(item => `
+      <span class="chapter-tab-group">
+        <a class="btn secondary" style="padding:6px 10px;font-size:11px;" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.name || 'Playlist')}</a>
+        <button class="btn secondary chapter-tab-move" data-playlist-del="${escapeHtml(item.id)}" title="Remove playlist link">×</button>
+      </span>
+    `).join('') || '<span class="small">No playlist links for this chapter yet.</span>';
+  }
+
+  async function addPlaylistLink(){
+    const url = $('#playlistUrl').value.trim();
+    const name = $('#playlistName').value.trim();
+    if(!url || !isSafePlaylistUrl(url)){
+      setStatus('Enter a complete playlist URL that begins with https:// or http://.');
+      return;
+    }
+    await flushChapterAutosave({ quiet: true });
+    const chapter = ensureActiveChapterFromEditor();
+    chapter.playlists = Array.isArray(chapter.playlists) ? chapter.playlists : [];
+    chapter.playlists.unshift({
+      id: 'playlist_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now(),
+      name: name || 'Playlist',
+      url,
+      createdAt: Date.now()
+    });
+    $('#playlistName').value = '';
+    $('#playlistUrl').value = '';
+    await persistChapter(chapter, { revision: state.chapterDraftRevision });
+    renderPlaylists();
+    setStatus('Playlist link added.');
+  }
+
+  async function removePlaylistLink(playlistId){
+    const chapter = getActiveChapter();
+    if(!chapter) return;
+    chapter.playlists = (chapter.playlists || []).filter(item => String(item.id) !== String(playlistId));
+    await persistChapter(chapter, { revision: state.chapterDraftRevision });
+    renderPlaylists();
+  }
+
+  function renderChapterPhotos(){
+    const gallery = $('#chapterPhotoGallery');
+    if(!gallery) return;
+    const chapter = getActiveChapter();
+    const photos = Array.isArray(chapter?.photos) ? chapter.photos : [];
+    gallery.innerHTML = photos.map(photo => `
+      <div class="chapter-photo-card">
+        <img src="${escapeHtml(photo.url)}" alt="${escapeHtml(photo.caption || 'Chapter reference photo')}">
+        <div class="photo-copy">
+          <div class="photo-caption">${escapeHtml(photo.caption || 'Chapter photo')}</div>
+          <button class="btn secondary" style="padding:5px 8px;font-size:11px;margin-top:8px;" data-chapter-photo-del="${escapeHtml(photo.id)}">Remove photo</button>
+        </div>
+      </div>
+    `).join('') || '<div class="small">No photos attached to this chapter yet.</div>';
+  }
+
+  function ensureActiveChapterFromEditor(){
+    let chapter = getActiveChapter();
+    if(chapter) return chapter;
+    const now = Date.now();
+    chapter = {
+      id: 'id_' + Math.random().toString(36).slice(2, 11) + '_' + now,
+      title: $('#chapterTitle').value.trim() || `Chapter ${state.data.chapters.length + 1}`,
+      meta: $('#chapterMeta').value.trim(),
+      content: $('#chapterText').value,
+      spotifyUrl: $('#spotifyUrl').value,
+      youtubeUrl: $('#youtubeUrl').value,
+      photos: [],
+      inlineComments: [],
+      playlists: [],
+      tabName: '',
+      headerImageUrl: '',
+      order: state.data.chapters.length + 1,
+      createdAt: now,
+      updatedAt: now
+    };
+    state.data.chapters.push(chapter);
+    state.activeChapterId = chapter.id;
+    return chapter;
+  }
+
+  async function addChapterPhoto(){
+    const file = $('#chapterPhotoFile').files[0];
+    if(!file){
+      setStatus('Choose a photo first.');
+      return;
+    }
+    const chapter = ensureActiveChapterFromEditor();
+    setStatus('Uploading chapter photo...');
+    const url = await uploadImage(file);
+    if(!url){
+      setStatus('Photo upload failed. Please try again.');
+      return;
+    }
+    chapter.photos = Array.isArray(chapter.photos) ? chapter.photos : [];
+    chapter.photos.unshift({
+      id: 'photo_' + Math.random().toString(36).slice(2, 11) + '_' + Date.now(),
+      url,
+      caption: $('#chapterPhotoCaption').value.trim(),
+      createdAt: Date.now()
+    });
+    $('#chapterPhotoFile').value = '';
+    $('#chapterPhotoCaption').value = '';
+    await persistChapter(chapter);
+    renderChapterPhotos();
+  }
+
+  async function removeChapterPhoto(photoId){
+    const chapter = getActiveChapter();
+    if(!chapter) return;
+    chapter.photos = (chapter.photos || []).filter(photo => String(photo.id) !== String(photoId));
+    await persistChapter(chapter);
+    renderChapterPhotos();
+  }
+
+  async function deleteActiveChapter(){
+    clearTimeout(state.chapterSaveTimer);
+    const chapter = getActiveChapter();
+    if(!chapter){
+      setStatus('There is no chapter to delete.');
+      return;
+    }
+    if(!confirm(`Delete “${chapter.title || 'this chapter'}”? This cannot be undone.`)) return;
+    const deletedId = chapter.id;
+    if(String(state.dirtyChapterId) === String(deletedId)) state.dirtyChapterId = null;
+    await deleteChapterFromCloud(deletedId);
+    state.activeChapterId = state.data.chapters[0]?.id || null;
+    if(state.activeChapterId) openChapter(state.activeChapterId, { skipDraftSave: true });
+    else openChapter(null, { skipDraftSave: true });
+    render();
   }
 
   function renderMediaEmbeds(spotifyUrl, youtubeUrl){
@@ -661,49 +1540,75 @@
     }
   }
 
-  function openChapter(chId){
+  async function openChapter(chId, { skipDraftSave = false } = {}){
+    if(!skipDraftSave && state.dirtyChapterId && String(state.dirtyChapterId) !== String(chId)){
+      await flushChapterAutosave({ quiet: true });
+    }
     state.activeChapterId = chId;
     let ch = state.data.chapters.find(c => String(c.id) === String(chId));
     if(!ch && state.data.chapters.length > 0){
       ch = state.data.chapters[0];
       state.activeChapterId = ch.id;
     }
-    
+
+    state.activeInlineCommentKey = null;
+    state.activeInlineCommentIndex = null;
+    state.activeInlineCommentAnchor = '';
+    state.replyingToCommentId = null;
     if(ch){
       $('#editorHeading').textContent = ch.title || 'Chapter';
       $('#chapterTitle').value = ch.title || '';
       $('#chapterMeta').value = ch.meta || '';
       $('#chapterText').value = ch.content || '';
+      $('#chapterTabName').value = ch.tabName || '';
       $('#spotifyUrl').value = ch.spotifyUrl || '';
       $('#youtubeUrl').value = ch.youtubeUrl || '';
       renderMediaEmbeds(ch.spotifyUrl, ch.youtubeUrl);
+      setChapterSaveState('Saved');
     } else {
       $('#editorHeading').textContent = 'Chapter';
       $('#chapterTitle').value = '';
       $('#chapterMeta').value = '';
       $('#chapterText').value = '';
+      $('#chapterTabName').value = '';
       $('#spotifyUrl').value = '';
       $('#youtubeUrl').value = '';
       renderMediaEmbeds('', '');
+      setChapterSaveState('Saved');
     }
+    updateWordCount($('#chapterText').value);
     renderChapterNav();
+    renderChapterHeader();
+    renderInlineReader();
+    renderInlineComments();
+    renderChapterPhotos();
+    renderPlaylists();
     renderGeneralComments();
   }
 
-  function addNewChapter(){
-    const newId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+  async function addNewChapter(){
+    if(state.dirtyChapterId) await flushChapterAutosave({ quiet: true });
+    const now = Date.now();
     const chNum = state.data.chapters.length + 1;
     const newCh = {
-      id: newId,
+      id: 'id_' + Math.random().toString(36).slice(2, 11) + '_' + now,
       title: `Chapter ${chNum}`,
       meta: '',
       content: '',
       spotifyUrl: '',
-      youtubeUrl: ''
+      youtubeUrl: '',
+      photos: [],
+      inlineComments: [],
+      playlists: [],
+      tabName: `Chapter ${chNum}`,
+      headerImageUrl: '',
+      order: chNum,
+      createdAt: now,
+      updatedAt: now
     };
     state.data.chapters.push(newCh);
-    openChapter(newId);
-    persist();
+    await persistChapter(newCh, { quiet: true });
+    await openChapter(newCh.id, { skipDraftSave: true });
     setStatus(`Created Chapter ${chNum}.`);
   }
 
@@ -751,42 +1656,45 @@
         $('#chapterTitle').value = ch.title || '';
         $('#chapterMeta').value = ch.meta || '';
         $('#chapterText').value = ch.content || '';
+        $('#chapterTabName').value = ch.tabName || '';
         $('#spotifyUrl').value = ch.spotifyUrl || '';
         $('#youtubeUrl').value = ch.youtubeUrl || '';
         renderMediaEmbeds(ch.spotifyUrl, ch.youtubeUrl);
       }
     }
+    updateWordCount($('#chapterText').value);
+    renderChapterHeader();
+    renderInlineReader();
+    renderInlineComments();
+    renderChapterPhotos();
+    renderPlaylists();
     renderGeneralComments();
   }
 
-  function saveChapterData(){
-    const titleVal = $('#chapterTitle').value.trim() || 'Untitled';
-    const metaVal = $('#chapterMeta').value.trim();
-    const contentVal = $('#chapterText').value;
-    const spotifyVal = $('#spotifyUrl').value;
-    const youtubeVal = $('#youtubeUrl').value;
+  async function saveChapterData({ quiet = false, revision = state.chapterDraftRevision } = {}){
+    const chapter = applyEditorValuesToChapter(ensureActiveChapterFromEditor());
+    renderMediaEmbeds(chapter.spotifyUrl, chapter.youtubeUrl);
+    await persistChapter(chapter, { quiet, revision });
+    updateWordCount(chapter.content);
+    renderChapterNav();
+    renderChapterHeader();
+    renderInlineReader();
+    renderInlineComments();
+    renderChapterPhotos();
+    renderPlaylists();
+    $('#editorHeading').textContent = chapter.title;
+  }
 
-    if(state.activeChapterId){
-      const ch = state.data.chapters.find(c => String(c.id) === String(state.activeChapterId));
-      if(ch){
-        ch.title = titleVal;
-        ch.meta = metaVal;
-        ch.content = contentVal;
-        ch.spotifyUrl = spotifyVal;
-        ch.youtubeUrl = youtubeVal;
-      }else{
-        const newCh = { id: state.activeChapterId, title: titleVal, meta: metaVal, content: contentVal, spotifyUrl: spotifyVal, youtubeUrl: youtubeVal };
-        state.data.chapters.push(newCh);
-      }
-    }else{
-      const newCh = { id: 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now(), title: titleVal, meta: metaVal, content: contentVal, spotifyUrl: spotifyVal, youtubeUrl: youtubeVal };
-      state.data.chapters.push(newCh);
-      state.activeChapterId = newCh.id;
-    }
-    renderMediaEmbeds(spotifyVal, youtubeVal);
-    persist();
-    render();
-    setStatus('Chapter saved.');
+  function scheduleChapterAutosave(){
+    const hadActiveChapter = Boolean(getActiveChapter());
+    const chapter = ensureActiveChapterFromEditor();
+    if(!hadActiveChapter) renderChapterNav();
+    state.dirtyChapterId = chapter.id;
+    state.chapterDraftRevision += 1;
+    const revision = state.chapterDraftRevision;
+    setChapterSaveState('Saving…');
+    clearTimeout(state.chapterSaveTimer);
+    state.chapterSaveTimer = setTimeout(() => saveChapterData({ quiet: true, revision }), 500);
   }
 
   async function saveCover(file){
@@ -809,7 +1717,22 @@
     $$('.tab').forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.view)));
     $('#homeBtn').addEventListener('click', () => setView('pins'));
     $('#backBtn').addEventListener('click', () => setView('pins'));
-    $('#distractionBtn').addEventListener('click', () => $('#commentsPanel').classList.toggle('hidden'));
+    $('#distractionBtn').addEventListener('click', enterFocusMode);
+    $('#editCommentsTopBtn').addEventListener('click', showCommentsMode);
+    $('#focusBackBtn').addEventListener('click', exitFocusMode);
+    $('#exitFocusBtn').addEventListener('click', exitFocusMode);
+    $('#writeModeBtn').addEventListener('click', () => setEditorMode('write'));
+    $('#commentsModeBtn').addEventListener('click', showCommentsMode);
+    $('#chapterTabName').addEventListener('input', scheduleTabNameSave);
+    $('#focusChapterText').addEventListener('input', () => {
+      const text = $('#focusChapterText').value;
+      $('#chapterText').value = text;
+      updateWordCount(text);
+      scheduleChapterAutosave();
+    });
+    document.addEventListener('keydown', event => {
+      if(event.key === 'Escape' && state.focusModeActive) exitFocusMode();
+    });
     $('#copyBtn').addEventListener('click', async () => {
       const text = $('#chapterText').value || '';
       if(!text) return;
@@ -899,38 +1822,43 @@
       render();
     });
 
-    $('#saveChapterBtn').addEventListener('click', saveChapterData);
+    $('#saveChapterBtn').addEventListener('click', () => saveChapterData());
+    $('#deleteChapterBtn').addEventListener('click', deleteActiveChapter);
+    $('#saveChapterHeaderBtn').addEventListener('click', saveChapterHeaderImage);
+    $('#removeChapterHeaderBtn').addEventListener('click', removeChapterHeaderImage);
+    $('#addChapterPhotoBtn').addEventListener('click', addChapterPhoto);
+    $('#addPlaylistBtn').addEventListener('click', addPlaylistLink);
+    $('#addInlineCommentBtn').addEventListener('click', addInlineComment);
+    $('#cancelInlineReplyBtn').addEventListener('click', cancelInlineReply);
 
-    $('#spotifyUrl').addEventListener('input', () => {
-      renderMediaEmbeds($('#spotifyUrl').value, $('#youtubeUrl').value);
-    });
-    $('#youtubeUrl').addEventListener('input', () => {
-      renderMediaEmbeds($('#spotifyUrl').value, $('#youtubeUrl').value);
+    ['chapterTitle', 'chapterMeta', 'chapterText', 'spotifyUrl', 'youtubeUrl'].forEach(id => {
+      $(`#${id}`).addEventListener('input', () => {
+        if(id === 'spotifyUrl' || id === 'youtubeUrl'){
+          renderMediaEmbeds($('#spotifyUrl').value, $('#youtubeUrl').value);
+        }
+        if(id === 'chapterText') updateWordCount($('#chapterText').value);
+        scheduleChapterAutosave();
+      });
     });
 
-    $('#chapterTitle').addEventListener('input', () => {
-      if(!state.activeChapterId && state.data.chapters.length === 0){
-        state.activeChapterId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-      }
+    document.addEventListener('visibilitychange', () => {
+      if(document.visibilityState === 'hidden' && state.dirtyChapterId) flushChapterAutosave({ quiet: true });
+    });
+    window.addEventListener('pagehide', () => {
+      if(state.focusModeActive) $('#chapterText').value = $('#focusChapterText').value;
+      if(state.dirtyChapterId) flushChapterAutosave({ quiet: true });
+    });
+    window.addEventListener('online', () => {
+      if(state.dirtyChapterId) flushChapterAutosave({ quiet: true });
     });
 
     $('#addGeneralCommentBtn').addEventListener('click', async () => {
-      if(state.activeChapterId == null){
-        if(state.data.chapters.length > 0){
-          state.activeChapterId = state.data.chapters[0].id;
-        } else {
-          state.activeChapterId = 'id_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-          state.data.chapters.push({
-            id: state.activeChapterId,
-            title: $('#chapterTitle').value.trim() || 'Untitled',
-            meta: $('#chapterMeta').value.trim(),
-            content: $('#chapterText').value,
-            spotifyUrl: $('#spotifyUrl').value,
-            youtubeUrl: $('#youtubeUrl').value
-          });
-        }
+      let chapter = getActiveChapter();
+      if(!chapter){
+        chapter = ensureActiveChapterFromEditor();
+        await persistChapter(chapter, { quiet: true });
       }
-      const chId = state.activeChapterId;
+      const chId = chapter.id;
       const author = $('#commentAuthor').value.trim() || 'Anonymous';
       const text = $('#generalCommentText').value.trim();
       if(!text) return;
@@ -946,16 +1874,59 @@
     document.addEventListener('click', async e => {
       const btnTarget = e.target.closest('button');
       if(btnTarget && btnTarget.id === 'addNewChapterBtn'){
-        addNewChapter();
+        await addNewChapter();
         return;
       }
 
-      const t = e.target.closest('[data-open-chapter],[data-pin-open],[data-pin-del],[data-pin-edit],[data-subpin-del],[data-subpin-edit],[data-del-comment],[data-beat-del]');
+      const t = e.target.closest('[data-open-chapter],[data-chapter-move],[data-inline-comment-open],[data-inline-comment-reply],[data-inline-comment-del],[data-chapter-photo-del],[data-playlist-del],[data-pin-open],[data-pin-del],[data-pin-edit],[data-subpin-del],[data-subpin-edit],[data-del-comment],[data-beat-del]');
       if(!t) return;
+
+      const chapterMove = t.getAttribute('data-chapter-move');
+      if(chapterMove !== null){
+        const id = t.getAttribute('data-chapter-id');
+        const index = state.data.chapters.findIndex(chapter => String(chapter.id) === String(id));
+        const target = state.data.chapters[index + (chapterMove === 'earlier' ? -1 : 1)];
+        if(!target){
+          setStatus(chapterMove === 'earlier' ? 'This chapter is already first.' : 'This chapter is already last.');
+          return;
+        }
+        await reorderChapters(id, target.id);
+        return;
+      }
+
+      const playlistDeleteId = t.getAttribute('data-playlist-del');
+      if(playlistDeleteId !== null){
+        await removePlaylistLink(playlistDeleteId);
+        return;
+      }
+
+      const inlineCommentOpenKey = t.getAttribute('data-inline-comment-open');
+      if(inlineCommentOpenKey !== null){
+        openInlineCommentThread(inlineCommentOpenKey, t.getAttribute('data-inline-comment-index'));
+        return;
+      }
+
+      const inlineCommentReplyId = t.getAttribute('data-inline-comment-reply');
+      if(inlineCommentReplyId !== null){
+        beginInlineReply(inlineCommentReplyId);
+        return;
+      }
+
+      const inlineCommentDeleteId = t.getAttribute('data-inline-comment-del');
+      if(inlineCommentDeleteId !== null){
+        await removeInlineComment(inlineCommentDeleteId);
+        return;
+      }
 
       const openChapterId = t.getAttribute('data-open-chapter');
       if(openChapterId !== null){
-        openChapter(openChapterId);
+        await openChapter(openChapterId);
+        return;
+      }
+
+      const chapterPhotoDeleteId = t.getAttribute('data-chapter-photo-del');
+      if(chapterPhotoDeleteId !== null){
+        await removeChapterPhoto(chapterPhotoDeleteId);
         return;
       }
 
